@@ -30,6 +30,9 @@
         "symfony/intl": "^3.4|^4.3",
         "symfony/web-profiler-bundle": "^3.4|^4.3"
     },
+    "conflict": {
+        "doctrine/inflector": "^1.4"
+    },
     "prefer-stable": true,
     "autoload": {
         "psr-4": {
