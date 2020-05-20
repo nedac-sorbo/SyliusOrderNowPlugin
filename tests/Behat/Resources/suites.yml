@@ -1,0 +1,6 @@
+default:
+    suites:
+        order_now:
+            contexts: []
+            filters:
+                tags: "@order_now"
