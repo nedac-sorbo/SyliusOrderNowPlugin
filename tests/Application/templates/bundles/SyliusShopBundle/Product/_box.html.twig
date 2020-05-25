@@ -1,0 +1,39 @@
+{% import "@SyliusShop/Common/Macro/money.html.twig" as money %}
+
+{{ sonata_block_render_event('sylius.shop.product.index.before_box', {'product': product}) }}
+
+{% form_theme form 'form/product_card_form_theme.html.twig' %}
+
+<style>
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+        opacity: 1;
+    }
+</style>
+
+<div class="ui fluid card">
+    <a href="{{ path('sylius_shop_product_show', {'slug': product.slug, '_locale': product.translation.locale}) }}" class="blurring dimmable image">
+        <div class="ui dimmer">
+            <div class="content">
+                <div class="center">
+                    <div class="ui inverted button">{{ 'sylius.ui.view_more'|trans }}</div>
+                </div>
+            </div>
+        </div>
+        {% include '@SyliusShop/Product/_mainImage.html.twig' with {'product': product} %}
+    </a>
+    <div class="content">
+        <a href="{{ path('sylius_shop_product_show', {'slug': product.slug, '_locale': product.translation.locale}) }}" class="header sylius-product-name">{{ product.name }}</a>
+        {% if not product.variants.empty() %}
+            <div class="sylius-product-price">{{ money.calculatePrice(product|sylius_resolve_variant) }}</div>
+        {% endif %}
+    </div>
+    <div class="ui bottom attached button nedac-order-now-button-container">
+        {{ form_start(form) }}
+            {{ form_row(form.cartItem) }}
+            <i class="add icon"></i>
+        {{ form_end(form) }}
+    </div>
+</div>
+
+{{ sonata_block_render_event('sylius.shop.product.index.after_box', {'product': product}) }}
