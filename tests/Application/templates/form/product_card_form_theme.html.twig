@@ -2,14 +2,14 @@
 {% endblock %}
 
 {% block integer_widget %}
-    <input type="number" name="{{ full_name }}" style="width: 17.5%;border: 1px solid rgba(34,36,38,.15);border-radius:2.5px;color:#909090;" value="1" />
+    <input class="nedac-sylius-order-now-plugin-number-input" type="number" name="{{ full_name }}" style="width: 17.5%;border: 1px solid rgba(34,36,38,.15);border-radius:2.5px;color:#909090;" value="1" />
 {% endblock %}
 
 {% block choice_widget %}
     {%- if required and placeholder is none and not placeholder_in_choices and not multiple and (attr.size is not defined or attr.size <= 1) -%}
         {% set required = false %}
     {%- endif -%}
-    <select name="{{ full_name }}" style="width: 25%; outline: 0; background-color: #fff;border: 1px solid rgba(34,36,38,.15);border-radius:2.5px;color:#909090;" {% if multiple %} multiple="multiple"{% endif %}>
+    <select class="nedac-sylius-order-now-plugin-dropdown" name="{{ full_name }}" style="width: 25%; outline: 0; background-color: #fff;border: 1px solid rgba(34,36,38,.15);border-radius:2.5px;color:#909090;" {% if multiple %} multiple="multiple"{% endif %}>
         {%- if placeholder is not none -%}
             <option value=""{% if required and value is empty %} selected="selected"{% endif %}>{{ placeholder != '' ? (translation_domain is same as(false) ? placeholder : placeholder|trans({}, translation_domain)) }}</option>
         {%- endif -%}

@@ -30,21 +30,19 @@
             <div class="sylius-product-price">{{ money.calculatePrice(product|sylius_resolve_variant) }}</div>
         {% endif %}
     </div>
-    <a onclick="document.getElementById('{{ formId }}').submit()">
-        <div class="ui bottom attached button nedac-order-now-button-container">
-            {{ form_start(form, {'action': path('sylius_shop_ajax_cart_add_item', {'productId': product.id}), 'attr': {'id': formId, 'novalidate': 'novalidate'}}) }}
-                {% if not product.simple %}
-                    {% if product.variantSelectionMethodChoice %}
-                        {% include '@SyliusShop/Product/Show/_variants.html.twig' %}
-                    {% else %}
-                        {% include '@SyliusShop/Product/Show/_options.html.twig' %}
-                    {% endif %}
+    <div class="ui bottom attached button nedac-order-now-button-container">
+        {{ form_start(form, {'action': path('sylius_shop_ajax_cart_add_item', {'productId': product.id}), 'attr': {'id': formId, 'novalidate': 'novalidate'}}) }}
+            {% if not product.simple %}
+                {% if product.variantSelectionMethodChoice %}
+                    {% include '@SyliusShop/Product/Show/_variants.html.twig' %}
+                {% else %}
+                    {% include '@SyliusShop/Product/Show/_options.html.twig' %}
                 {% endif %}
-                {{ form_row(form.cartItem.quantity) }}
-                <i class="add icon"></i>
-            {{ form_end(form) }}
-        </div>
-    </a>
+            {% endif %}
+            {{ form_row(form.cartItem.quantity) }}
+            <i class="add icon"></i>
+        {{ form_end(form) }}
+    </div>
 </div>
 
 {{ sonata_block_render_event('sylius.shop.product.index.after_box', {'product': product}) }}
