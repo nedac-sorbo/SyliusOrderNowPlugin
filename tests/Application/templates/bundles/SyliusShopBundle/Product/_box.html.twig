@@ -4,6 +4,8 @@
 
 {% form_theme form 'form/product_card_form_theme.html.twig' %}
 
+{% set formId = 'nedac-sylius-order-now-plugin-form-' ~ product.id %}
+
 <style>
     input[type=number]::-webkit-inner-spin-button,
     input[type=number]::-webkit-outer-spin-button {
@@ -28,12 +30,14 @@
             <div class="sylius-product-price">{{ money.calculatePrice(product|sylius_resolve_variant) }}</div>
         {% endif %}
     </div>
-    <div class="ui bottom attached button nedac-order-now-button-container">
-        {{ form_start(form) }}
-            {{ form_row(form.cartItem) }}
-            <i class="add icon"></i>
-        {{ form_end(form) }}
-    </div>
+    <a onclick="document.getElementById('{{ formId }}').submit()">
+        <div class="ui bottom attached button nedac-order-now-button-container">
+            {{ form_start(form, {'attr': {'id': formId}}) }}
+                {{ form_row(form.cartItem) }}
+                <i class="add icon"></i>
+            {{ form_end(form) }}
+        </div>
+    </a>
 </div>
 
 {{ sonata_block_render_event('sylius.shop.product.index.after_box', {'product': product}) }}
