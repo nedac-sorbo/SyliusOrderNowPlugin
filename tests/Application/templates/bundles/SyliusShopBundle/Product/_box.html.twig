@@ -6,13 +6,6 @@
 
 {% set formId = 'nedac-sylius-order-now-plugin-form-' ~ product.id %}
 
-<style>
-    input[type=number]::-webkit-inner-spin-button,
-    input[type=number]::-webkit-outer-spin-button {
-        opacity: 1;
-    }
-</style>
-
 <div class="ui fluid card">
     <a href="{{ path('sylius_shop_product_show', {'slug': product.slug, '_locale': product.translation.locale}) }}" class="blurring dimmable image">
         <div class="ui dimmer">
