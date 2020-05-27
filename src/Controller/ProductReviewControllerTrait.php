@@ -6,7 +6,6 @@ namespace Nedac\SyliusOrderNowPlugin\Controller;
 
 use FOS\RestBundle\View\View;
 use Nedac\SyliusOrderNowPlugin\Form\Type\AddToCartType;
-use SM\StateMachine\StateMachineInterface;
 use Sylius\Bundle\ResourceBundle\Controller\EventDispatcherInterface;
 use Sylius\Bundle\ResourceBundle\Controller\FlashHelperInterface;
 use Sylius\Bundle\ResourceBundle\Controller\NewResourceFactoryInterface;
@@ -14,6 +13,7 @@ use Sylius\Bundle\ResourceBundle\Controller\RedirectHandlerInterface;
 use Sylius\Bundle\ResourceBundle\Controller\RequestConfiguration;
 use Sylius\Bundle\ResourceBundle\Controller\RequestConfigurationFactoryInterface;
 use Sylius\Bundle\ResourceBundle\Controller\ResourceFormFactoryInterface;
+use Sylius\Bundle\ResourceBundle\Controller\StateMachineInterface;
 use Sylius\Bundle\ResourceBundle\Controller\ViewHandlerInterface;
 use Sylius\Component\Core\Model\ProductInterface;
 use Sylius\Component\Resource\Factory\FactoryInterface;
