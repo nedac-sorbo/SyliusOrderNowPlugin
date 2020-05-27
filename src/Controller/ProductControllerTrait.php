@@ -14,6 +14,7 @@ use Sylius\Bundle\ResourceBundle\Controller\ResourcesCollectionProviderInterface
 use Sylius\Bundle\ResourceBundle\Controller\ViewHandlerInterface;
 use Sylius\Bundle\ResourceBundle\Grid\View\ResourceGridView;
 use Sylius\Component\Resource\Metadata\MetadataInterface;
+use Sylius\Component\Resource\Model\ResourceInterface;
 use Sylius\Component\Resource\Repository\RepositoryInterface;
 use Sylius\Component\Resource\ResourceActions;
 use Symfony\Component\Form\FormInterface;
@@ -29,6 +30,7 @@ use Symfony\Component\HttpFoundation\Response;
  * @property ViewHandlerInterface $viewHandler
  * @method void isGrantedOr403(RequestConfiguration $configuration, string $permission)
  * @method FormInterface createForm(string $type, $data = null, array $options = [])
+ * @method ResourceInterface findOr404(RequestConfiguration $configuration)
  */
 trait ProductControllerTrait
 {
@@ -45,17 +47,20 @@ trait ProductControllerTrait
 
         if ($configuration->isHtmlRequest()) {
             $forms = [];
+            $iterable = $resources;
 
             if ($resources instanceof ResourceGridView) {
                 /** @var Pagerfanta $pager */
                 $pager = $resources->getData();
 
-                foreach ($pager->getIterator() as $product) {
-                    $forms[] = $this
-                        ->createForm(AddToCartType::class, null, ['product' => $product])
-                        ->createView()
-                    ;
-                }
+                $iterable = $pager->getIterator();
+            }
+
+            foreach ($iterable as $product) {
+                $forms[] = $this
+                    ->createForm(AddToCartType::class, null, ['product' => $product])
+                    ->createView()
+                ;
             }
 
             $view
