@@ -24,7 +24,6 @@ trait OrderItemControllerTrait
     {
         $response = parent::addAction($request);
 
-        // TODO: Only do this when form is submitted from product card, not from the product show page
         if ($response instanceof RedirectResponse) {
             $configuration = $this->requestConfigurationFactory->create($this->metadata, $request);
             $response = $this->redirectHandler->redirectToReferer($configuration);
