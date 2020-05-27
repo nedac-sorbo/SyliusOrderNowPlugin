@@ -17,7 +17,7 @@
 {% if resources.data|length > 0 %}
     <div class="ui three cards" id="products">
         {% for product in resources.data %}
-            {% include '@SyliusShop/Product/_box.html.twig' with {'form': forms[loop.index - 1]} %}
+            {% include '@SyliusShop/Product/_box.html.twig' with {'cardForm': forms[loop.index - 1]} %}
         {% endfor %}
     </div>
     <div class="ui hidden divider"></div>
