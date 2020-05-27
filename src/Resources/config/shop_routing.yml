@@ -1,0 +1,19 @@
+nedac_shop_cart_add_item:
+  path: /{_locale}/nedac/cart/add/
+  methods: [POST]
+  requirements:
+    _locale: ^[a-z]{2}(?:_[A-Z]{2})?$
+  defaults:
+    _controller: Nedac\SyliusOrderNowPlugin\Controller\OrderItemController:addAction
+    _sylius:
+      factory:
+        method: createForProduct
+        arguments: [expr:notFoundOnNull(service('sylius.repository.product').find($productId))]
+      form:
+        type: Nedac\SyliusOrderNowPlugin\Form\Type\AddToCartType
+        options:
+          product: expr:notFoundOnNull(service('sylius.repository.product').find($productId))
+      redirect:
+        route: sylius_shop_cart_summary
+        parameters: {}
+      flash: sylius.cart.add_item
