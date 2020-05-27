@@ -78,4 +78,37 @@ trait ProductControllerTrait
 
         return $this->viewHandler->handle($configuration, $view);
     }
+
+    public function showAction(Request $request): Response
+    {
+        $configuration = $this->requestConfigurationFactory->create($this->metadata, $request);
+
+        $this->isGrantedOr403($configuration, ResourceActions::SHOW);
+        $resource = $this->findOr404($configuration);
+
+        $this->eventDispatcher->dispatch(ResourceActions::SHOW, $configuration, $resource);
+
+        $view = View::create($resource);
+
+        if ($configuration->isHtmlRequest()) {
+            $cardForm = $this
+                ->createForm(AddToCartType::class, null, ['product' => $resource])
+                ->createView()
+            ;
+
+            $view
+                ->setTemplate($configuration->getTemplate(ResourceActions::SHOW . '.html'))
+                ->setTemplateVar($this->metadata->getName())
+                ->setData([
+                    'configuration' => $configuration,
+                    'metadata' => $this->metadata,
+                    'resource' => $resource,
+                    $this->metadata->getName() => $resource,
+                    'cardForm' => $cardForm
+                ])
+            ;
+        }
+
+        return $this->viewHandler->handle($configuration, $view);
+    }
 }
