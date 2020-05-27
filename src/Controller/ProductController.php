@@ -6,7 +6,7 @@ namespace Nedac\SyliusOrderNowPlugin\Controller;
 
 use Sylius\Bundle\ResourceBundle\Controller\ResourceController;
 
-final class ProductController extends ResourceController
+class ProductController extends ResourceController
 {
     use ProductControllerTrait;
 }
