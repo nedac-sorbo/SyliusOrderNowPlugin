@@ -36,6 +36,10 @@ use Symfony\Component\Form\FormView;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * @runTestsInSeparateProcesses
+ * @preserveGlobalState disabled
+ */
 final class ProductAssociationControllerTest extends MockeryTestCase
 {
     public function testCanInstantiate(): void
@@ -65,6 +69,8 @@ final class ProductAssociationControllerTest extends MockeryTestCase
 
     public function testAddsFormsToView(): void
     {
+        $view = Mockery::mock('alias:' . View::class);
+
         $response = Mockery::mock(Response::class);
 
         $viewHandler = Mockery::mock(ViewHandlerInterface::class);
@@ -139,11 +145,46 @@ final class ProductAssociationControllerTest extends MockeryTestCase
             ->andReturn($collection)
         ;
 
+        $formView = Mockery::mock(FormView::class);
+
         $form = Mockery::mock(FormInterface::class);
         $form
             ->shouldReceive('createView')
             ->once()
-            ->andReturn(Mockery::mock(FormView::class))
+            ->andReturn($formView)
+        ;
+
+        $view
+            ->shouldReceive('create')
+            ->once()
+            ->andReturnSelf()
+        ;
+
+        $view
+            ->shouldReceive('setTemplate')
+            ->with('TEMPLATE')
+            ->once()
+            ->andReturnSelf()
+        ;
+
+        $view
+            ->shouldReceive('setTemplateVar')
+            ->with('NAME')
+            ->once()
+            ->andReturnSelf()
+        ;
+
+        $view
+            ->shouldReceive('setData')
+            ->with([
+                'configuration' => $configuration,
+                'metadata' => $metadata,
+                'resource' => $resource,
+                'NAME' => $resource,
+                'forms' => [$formView]
+            ])
+            ->once()
+            ->andReturnSelf()
         ;
 
         $controller = Mockery::mock(ProductAssociationController::class)->makePartial();
