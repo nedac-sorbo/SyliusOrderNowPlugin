@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Nedac\SyliusOrderNowPlugin\Controller;
 
 use FOS\RestBundle\View\View;
+use Nedac\SyliusOrderNowPlugin\Form\Type\AddToCartType;
 use Pagerfanta\Pagerfanta;
-use Sylius\Bundle\CoreBundle\Form\Type\Order\AddToCartType;
 use Sylius\Bundle\ResourceBundle\Controller\EventDispatcherInterface;
 use Sylius\Bundle\ResourceBundle\Controller\RequestConfiguration;
 use Sylius\Bundle\ResourceBundle\Controller\RequestConfigurationFactoryInterface;

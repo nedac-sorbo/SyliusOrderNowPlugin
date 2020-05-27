@@ -2,6 +2,12 @@
 
 <container xmlns="http://symfony.com/schema/dic/services" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
+        <service id="nedac.sylius_order_now_plugin.form.type.add_to_cart"
+                 class="Nedac\SyliusOrderNowPlugin\Form\Type\AddToCartType">
+            <argument key="$dataClass">Sylius\Bundle\OrderBundle\Controller\AddToCartCommand</argument>
+            <argument key="$validationGroups">%sylius.form.type.add_to_cart.validation_groups%</argument>
+            <tag name="form.type" />
+        </service>
         <service id="nedac.sylius_order_now_plugin.shop.block_event_listener.stylesheets"
                  class="Sylius\Bundle\UiBundle\Block\BlockEventListener">
             <argument>@NedacSyliusOrderNowPlugin/_stylesheets.html.twig</argument>
