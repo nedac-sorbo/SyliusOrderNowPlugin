@@ -20,9 +20,14 @@ use Symfony\Component\HttpFoundation\Response;
  */
 trait OrderItemControllerTrait
 {
+    protected function getParentAddActionResponse(Request $request): Response
+    {
+        return parent::addAction($request);
+    }
+
     public function addAction(Request $request): Response
     {
-        $response = parent::addAction($request);
+        $response = $this->getParentAddActionResponse($request);
 
         if ($response instanceof RedirectResponse) {
             $configuration = $this->requestConfigurationFactory->create($this->metadata, $request);
