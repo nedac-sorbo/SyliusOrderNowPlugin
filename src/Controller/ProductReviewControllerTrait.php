@@ -88,7 +88,11 @@ trait ProductReviewControllerTrait
                 $this->flashHelper->addSuccessFlash($configuration, ResourceActions::CREATE, $newResource);
             }
 
-            $postEvent = $this->eventDispatcher->dispatchPostEvent(ResourceActions::CREATE, $configuration, $newResource);
+            $postEvent = $this->eventDispatcher->dispatchPostEvent(
+                ResourceActions::CREATE,
+                $configuration,
+                $newResource
+            );
 
             if (!$configuration->isHtmlRequest()) {
                 return $this->viewHandler->handle($configuration, View::create($newResource, Response::HTTP_CREATED));
@@ -106,7 +110,11 @@ trait ProductReviewControllerTrait
             return $this->viewHandler->handle($configuration, View::create($form, Response::HTTP_BAD_REQUEST));
         }
 
-        $initializeEvent = $this->eventDispatcher->dispatchInitializeEvent(ResourceActions::CREATE, $configuration, $newResource);
+        $initializeEvent = $this->eventDispatcher->dispatchInitializeEvent(
+            ResourceActions::CREATE,
+            $configuration,
+            $newResource
+        );
         $initializeEventResponse = $initializeEvent->getResponse();
         if (null !== $initializeEventResponse) {
             return $initializeEventResponse;
