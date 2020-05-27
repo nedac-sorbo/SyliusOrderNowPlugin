@@ -12,3 +12,4 @@
 
 .idea
 .phpcs-cache
+.phpunit.result.cache
