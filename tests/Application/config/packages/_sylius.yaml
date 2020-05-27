@@ -21,9 +21,3 @@ sylius_product:
         product_association:
             classes:
                 controller: Nedac\SyliusOrderNowPlugin\Controller\ProductAssociationController
-
-sylius_order:
-    resources:
-        order_item:
-            classes:
-                controller: Nedac\SyliusOrderNowPlugin\Controller\OrderItemController
