@@ -28,7 +28,8 @@
         "symfony/debug-bundle": "^3.4|^4.3",
         "symfony/dotenv": "^4.3",
         "symfony/intl": "^3.4|^4.3",
-        "symfony/web-profiler-bundle": "^3.4|^4.3"
+        "symfony/web-profiler-bundle": "^3.4|^4.3",
+        "squizlabs/php_codesniffer": "^3.5"
     },
     "conflict": {
         "doctrine/inflector": "^1.4"
