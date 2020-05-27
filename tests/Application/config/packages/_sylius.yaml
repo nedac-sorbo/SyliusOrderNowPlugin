@@ -21,3 +21,10 @@ sylius_product:
         product_association:
             classes:
                 controller: Nedac\SyliusOrderNowPlugin\Controller\ProductAssociationController
+
+sylius_review:
+    resources:
+        product:
+            review:
+                classes:
+                    controller: Nedac\SyliusOrderNowPlugin\Controller\ProductReviewController
