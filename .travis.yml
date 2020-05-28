@@ -18,7 +18,6 @@ env:
     - SYLIUS_BUILD_DIR=etc/build
 
 before_install:
-  - phpenv config-rm xdebug.ini
   - echo "memory_limit=4096M" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
   - mkdir -p "${SYLIUS_CACHE_DIR}"
   - composer config -g github-oauth.github.com "$TOKEN"
@@ -67,9 +66,7 @@ script:
   - composer validate
   - vendor/bin/phpcs
   - vendor/bin/phpstan analyse -c phpstan.neon -l max src/
-  - mkdir -p ${SYLIUS_BUILD_DIR}/phpunit
   - vendor/bin/phpunit --coverage-clover ${SYLIUS_BUILD_DIR}/phpunit/clover.xml
-  - cat ${SYLIUS_BUILD_DIR}/phpunit/clover.xml
   - vendor/bin/coverage-check ${SYLIUS_BUILD_DIR}/phpunit/clover.xml 100
   - vendor/bin/behat --strict -vvv --no-interaction || vendor/bin/behat --strict -vvv --no-interaction --rerun
 
