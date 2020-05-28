@@ -57,7 +57,7 @@ final class OrderItemControllerTest extends MockeryTestCase
         $this->assertInstanceOf(ResourceController::class, $controller);
     }
 
-    public function  testRedirectsToReferer(): void
+    public function testRedirectsToReferer(): void
     {
         $configuration = Mockery::mock(RequestConfiguration::class);
 
