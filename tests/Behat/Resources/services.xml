@@ -32,6 +32,13 @@
         <service id="Tests\Nedac\SyliusOrderNowPlugin\Behat\Page\ProductReviewCreateInterface"
                  alias="nedac.sylius_order_now_plugin.behat.page.product_review_create" />
 
+        <service id="nedac.sylius_order_now_plugin.behat.page.product_review_index"
+                 class="Tests\Nedac\SyliusOrderNowPlugin\Behat\Page\ProductReviewIndex"
+                 parent="sylius.behat.symfony_page"
+                 public="false" />
+        <service id="Tests\Nedac\SyliusOrderNowPlugin\Behat\Page\ProductReviewIndexInterface"
+                 alias="nedac.sylius_order_now_plugin.behat.page.product_review_index" />
+
 
         <service id="nedac.sylius_order_now_plugin.behat.context.setup.product_option"
                  class="Tests\Nedac\SyliusOrderNowPlugin\Behat\Context\Setup\ProductOptionContext">
@@ -71,6 +78,7 @@
         <service id="nedac.sylius_order_now_plugin.behat.context.ui.product_review"
                  class="Tests\Nedac\SyliusOrderNowPlugin\Behat\Context\Ui\ProductReviewContext">
             <argument key="$createPage" type="service" id="nedac.sylius_order_now_plugin.behat.page.product_review_create" />
+            <argument key="$indexPage" type="service" id="nedac.sylius_order_now_plugin.behat.page.product_review_index" />
         </service>
     </services>
 </container>

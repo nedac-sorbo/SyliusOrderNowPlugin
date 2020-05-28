@@ -1,7 +1,7 @@
 @order_now @javascript
 Feature:
   As a customer
-  I need to be able to add products to my cart from the product card on the product review create page
+  I need to be able to add products to my cart from the product card on the product review index page
   So that I'm more likely to buy the product
 
   Background:
@@ -15,9 +15,9 @@ Feature:
     And this product is available in "Red" Color priced at "$25.17"
     And this product is available in "Green" Color priced at "$23.17"
     And this product is available in "Blue" Color priced at "$27.83"
-    And I want to review product "Hat"
+    And I check this product's reviews
 
   Scenario: Adding product to cart from the create product review page
-    When I click the order now button on the review create page
+    When I click the order now button on the review index page
     And I see the summary of my cart
     Then there should be one item in my cart
