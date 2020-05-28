@@ -3,6 +3,37 @@
 <container xmlns="http://symfony.com/schema/dic/services" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
         <defaults public="true" />
-        <!-- Put your Behat services here -->
+
+        <service id="nedac.sylius_order_now_plugin.behat.page.homepage"
+                 class="Tests\Nedac\SyliusOrderNowPlugin\Behat\Page\Homepage"
+                 parent="sylius.behat.symfony_page"
+                 public="false" />
+        <service id="Tests\Nedac\SyliusOrderNowPlugin\Behat\Page\HomepageInterface"
+                 alias="nedac.sylius_order_now_plugin.behat.page.homepage" />
+
+        <service id="nedac.sylius_order_now_plugin.behat.context.setup.product_option"
+                 class="Tests\Nedac\SyliusOrderNowPlugin\Behat\Context\Setup\ProductOptionContext">
+            <argument key="$sharedStorage" type="service" id="sylius.behat.shared_storage" />
+            <argument key="$productOptionRepository" type="service" id="sylius.repository.product_option" />
+            <argument key="$productOptionFactory" type="service" id="sylius.factory.product_option" />
+            <argument key="$productOptionValueFactory" type="service" id="sylius.factory.product_option_value" />
+            <argument key="$objectManager" type="service" id="doctrine.orm.default_entity_manager" />
+        </service>
+
+        <service id="nedac.sylius_order_now_plugin.behat.context.setup.product"
+                 class="Tests\Nedac\SyliusOrderNowPlugin\Behat\Context\Setup\ProductContext">
+            <argument key="$sharedStorage" type="service" id="sylius.behat.shared_storage" />
+            <argument key="$productRepository" type="service" id="sylius.repository.product" />
+            <argument key="$productFactory" type="service" id="sylius.factory.product" />
+            <argument key="$channelPricingFactory" type="service" id="sylius.factory.channel_pricing" />
+            <argument key="$productVariantFactory" type="service" id="sylius.custom_factory.product_variant" />
+            <argument key="$objectManager" type="service" id="doctrine.orm.default_entity_manager" />
+            <argument key="$slugGenerator" type="service" id="sylius.generator.slug" />
+        </service>
+
+        <service id="nedac.sylius_order_now_plugin.behat.context.ui.homepage"
+                 class="Tests\Nedac\SyliusOrderNowPlugin\Behat\Context\Ui\HomepageContext">
+            <argument key="$homepage" type="service" id="nedac.sylius_order_now_plugin.behat.page.homepage" />
+        </service>
     </services>
 </container>

@@ -1,6 +1,20 @@
 default:
     suites:
         order_now:
-            contexts: []
+            contexts:
+                - sylius.behat.context.hook.doctrine_orm
+
+                - sylius.behat.context.setup.channel
+                - nedac.sylius_order_now_plugin.behat.context.setup.product
+                - nedac.sylius_order_now_plugin.behat.context.setup.product_option
+
+                - sylius.behat.context.transform.product
+                - sylius.behat.context.transform.product_option
+                - sylius.behat.context.transform.shared_storage
+                - sylius.behat.context.transform.lexical
+
+                - sylius.behat.context.ui.channel
+                - sylius.behat.context.ui.shop.cart
+                - nedac.sylius_order_now_plugin.behat.context.ui.homepage
             filters:
                 tags: "@order_now"
