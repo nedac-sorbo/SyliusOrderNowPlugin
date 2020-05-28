@@ -236,6 +236,133 @@ final class ProductControllerTest extends MockeryTestCase
 
     public function testAddsFormToShowTemplate(): void
     {
-        $this->markTestIncomplete('TODO');
+        $view = Mockery::mock('alias:' . View::class);
+        $view
+            ->shouldReceive('create')
+            ->andReturnSelf()
+        ;
+
+        $view
+            ->shouldReceive('setTemplate')
+            ->with('TEMPLATE')
+            ->once()
+            ->andReturnSelf()
+        ;
+
+        $view
+            ->shouldReceive('setTemplateVar')
+            ->once()
+            ->with('NAME')
+            ->andReturnSelf()
+        ;
+
+        $configuration = Mockery::mock(RequestConfiguration::class);
+        $configuration
+            ->shouldReceive('isHtmlRequest')
+            ->once()
+            ->andReturn(true)
+        ;
+
+        $configuration
+            ->shouldReceive('getTemplate')
+            ->once()
+            ->andReturn('TEMPLATE')
+        ;
+
+        $requestConfigurationFactory = Mockery::mock(RequestConfigurationFactoryInterface::class);
+        $requestConfigurationFactory
+            ->shouldReceive('create')
+            ->once()
+            ->andReturn($configuration)
+        ;
+
+        $metadata = Mockery::mock(MetadataInterface::class);
+        $metadata
+            ->shouldReceive('getName')
+            ->twice()
+            ->andReturn('NAME')
+        ;
+
+        $product = Mockery::mock(ProductInterface::class);
+
+        $dispatcher = Mockery::mock(EventDispatcherInterface::class);
+        $dispatcher
+            ->shouldReceive('dispatch')
+            ->once()
+        ;
+
+        $formView = Mockery::mock(FormView::class);
+
+        $form = Mockery::mock(FormInterface::class);
+        $form
+            ->shouldReceive('createView')
+            ->once()
+            ->andReturn($formView)
+        ;
+
+        $view
+            ->shouldReceive('setData')
+            ->with([
+                'configuration' => $configuration,
+                'metadata' => $metadata,
+                'resource' => $product,
+                'NAME' => $product,
+                'cardForm' => $formView
+            ])
+            ->once()
+            ->andReturnSelf()
+        ;
+
+        $response = Mockery::mock(Response::class);
+
+        $viewHandler = Mockery::mock(ViewHandlerInterface::class);
+        $viewHandler
+            ->shouldReceive('handle')
+            ->once()
+            ->andReturn($response)
+        ;
+
+        $controller = Mockery::mock(ProductController::class)->makePartial();
+        $controller->shouldAllowMockingProtectedMethods();
+
+        $controller
+            ->shouldReceive('isGrantedOr403')
+            ->once()
+        ;
+
+        $controller
+            ->shouldReceive('findOr404')
+            ->once()
+            ->andReturn($product)
+        ;
+
+        $controller
+            ->shouldReceive('createForm')
+            ->with(AddToCartType::class, null, ['product' => $product])
+            ->once()
+            ->andReturn($form)
+        ;
+
+        $controller->__construct(
+            $metadata,
+            $requestConfigurationFactory,
+            $viewHandler,
+            Mockery::mock(RepositoryInterface::class),
+            Mockery::mock(FactoryInterface::class),
+            Mockery::mock(NewResourceFactoryInterface::class),
+            Mockery::mock(ObjectManager::class),
+            Mockery::mock(SingleResourceProviderInterface::class),
+            Mockery::mock(ResourcesCollectionProviderInterface::class),
+            Mockery::mock(ResourceFormFactoryInterface::class),
+            Mockery::mock(RedirectHandlerInterface::class),
+            Mockery::mock(FlashHelperInterface::class),
+            Mockery::mock(AuthorizationCheckerInterface::class),
+            $dispatcher,
+            Mockery::mock(StateMachineInterface::class),
+            Mockery::mock(ResourceUpdateHandlerInterface::class),
+            Mockery::mock(ResourceDeleteHandlerInterface::class)
+        );
+
+        $this->assertSame($response, $controller->showAction(Mockery::mock(Request::class)));
     }
 }
