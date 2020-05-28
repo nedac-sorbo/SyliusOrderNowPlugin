@@ -20,5 +20,6 @@ default:
                 - sylius.behat.context.ui.shop.product
                 - nedac.sylius_order_now_plugin.behat.context.ui.homepage
                 - nedac.sylius_order_now_plugin.behat.context.ui.product
+                - nedac.sylius_order_now_plugin.behat.context.ui.cart_summary
             filters:
                 tags: "@order_now"
