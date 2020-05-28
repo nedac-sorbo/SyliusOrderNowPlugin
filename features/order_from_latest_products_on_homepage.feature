@@ -17,7 +17,7 @@ Feature:
     And this product is available in "Blue" Color priced at "$27.83"
 
   Scenario: Adding a product to the cart from the latest products section on the homepage
-    When I visit this channel's homepage
+    When I visit the homepage
     And I click the order now button
     And I see the summary of my cart
     Then there should be one item in my cart

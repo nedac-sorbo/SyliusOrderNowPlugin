@@ -17,6 +17,14 @@ final class HomepageContext implements Context
     }
 
     /**
+     * @When I visit the homepage
+     */
+    public function iVisitTheHomepage(): void
+    {
+        $this->homepage->open();
+    }
+
+    /**
      * @When I click the order now button
      */
     public function iClickTheOrderNowButton(): void

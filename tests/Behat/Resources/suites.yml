@@ -13,7 +13,6 @@ default:
                 - sylius.behat.context.transform.shared_storage
                 - sylius.behat.context.transform.lexical
 
-                - sylius.behat.context.ui.channel
                 - sylius.behat.context.ui.shop.cart
                 - nedac.sylius_order_now_plugin.behat.context.ui.homepage
             filters:
