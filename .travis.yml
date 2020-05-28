@@ -67,8 +67,9 @@ script:
   - composer validate
   - vendor/bin/phpcs
   - vendor/bin/phpstan analyse -c phpstan.neon -l max src/
-  - vendor/bin/phpunit --coverage-clover "${SYLIUS_BUILD_DIR}/phpunit/clover.xml"
-  - vendor/bin/coverage-check "${SYLIUS_BUILD_DIR}/phpunit/clover.xml" 100
+  - vendor/bin/phpunit --coverage-clover ${SYLIUS_BUILD_DIR}/phpunit/clover.xml
+  - cat ${SYLIUS_BUILD_DIR}/phpunit/clover.xml
+  - vendor/bin/coverage-check ${SYLIUS_BUILD_DIR}/phpunit/clover.xml 100
   - vendor/bin/behat --strict -vvv --no-interaction || vendor/bin/behat --strict -vvv --no-interaction --rerun
 
 after_failure:
