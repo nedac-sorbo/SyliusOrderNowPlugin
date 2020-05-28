@@ -20,6 +20,11 @@ use Symfony\Component\HttpFoundation\Response;
  */
 trait OrderItemControllerTrait
 {
+    /**
+     * @codeCoverageIgnore
+     * @param Request $request
+     * @return Response
+     */
     protected function getParentAddActionResponse(Request $request): Response
     {
         return parent::addAction($request);
