@@ -10,8 +10,17 @@ use Sylius\Component\Core\Model\ProductInterface;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-final class AddToCartType extends AbstractResourceType
+class AddToCartType extends AbstractResourceType
 {
+    /**
+     * @codeCoverageIgnore
+     * @param OptionsResolver $resolver
+     */
+    protected function parentConfigureOptions(OptionsResolver $resolver): void
+    {
+        parent::configureOptions($resolver);
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('cartItem', CartItemType::class, ['product' => $options['product']]);
@@ -19,7 +28,7 @@ final class AddToCartType extends AbstractResourceType
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        parent::configureOptions($resolver);
+        $this->parentConfigureOptions($resolver);
 
         $resolver
             ->setDefined([
