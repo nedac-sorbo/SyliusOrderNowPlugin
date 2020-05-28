@@ -25,6 +25,13 @@
         <service id="Tests\Nedac\SyliusOrderNowPlugin\Behat\Page\CartSummaryInterface"
                  alias="nedac.sylius_order_now_plugin.behat.page.cart_summary" />
 
+        <service id="nedac.sylius_order_now_plugin.behat.page.product_review_create"
+                 class="Tests\Nedac\SyliusOrderNowPlugin\Behat\Page\ProductReviewCreate"
+                 parent="sylius.behat.symfony_page"
+                 public="false" />
+        <service id="Tests\Nedac\SyliusOrderNowPlugin\Behat\Page\ProductReviewCreateInterface"
+                 alias="nedac.sylius_order_now_plugin.behat.page.product_review_create" />
+
 
         <service id="nedac.sylius_order_now_plugin.behat.context.setup.product_option"
                  class="Tests\Nedac\SyliusOrderNowPlugin\Behat\Context\Setup\ProductOptionContext">
@@ -59,6 +66,11 @@
         <service id="nedac.sylius_order_now_plugin.behat.context.ui.cart_summary"
                  class="Tests\Nedac\SyliusOrderNowPlugin\Behat\Context\Ui\CartContext">
             <argument key="$page" type="service" id="nedac.sylius_order_now_plugin.behat.page.cart_summary" />
+        </service>
+
+        <service id="nedac.sylius_order_now_plugin.behat.context.ui.product_review"
+                 class="Tests\Nedac\SyliusOrderNowPlugin\Behat\Context\Ui\ProductReviewContext">
+            <argument key="$createPage" type="service" id="nedac.sylius_order_now_plugin.behat.page.product_review_create" />
         </service>
     </services>
 </container>
