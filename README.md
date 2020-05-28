@@ -3,6 +3,7 @@
     <img src="https://travis-ci.com/nedac-sorbo/SyliusOrderNowPlugin.svg?branch=master" alt="build:unknown">
   </a>
 </div>
+<br />
 This plugin adds a small form to each and every product card in the shop. The form allows customers to add products to
 their cart without having to visit the product detail and cart summary page.
 
