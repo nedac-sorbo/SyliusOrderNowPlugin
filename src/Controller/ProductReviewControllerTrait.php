@@ -78,10 +78,6 @@ trait ProductReviewControllerTrait
                 return $this->redirectHandler->redirectToIndex($configuration, $newResource);
             }
 
-            if ($configuration->hasStateMachine()) {
-                $this->stateMachine->apply($configuration, $newResource);
-            }
-
             $this->repository->add($newResource);
 
             if ($configuration->isHtmlRequest()) {
