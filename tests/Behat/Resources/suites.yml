@@ -5,6 +5,8 @@ default:
                 - sylius.behat.context.hook.doctrine_orm
 
                 - sylius.behat.context.setup.channel
+                - sylius.behat.context.setup.taxonomy
+                - sylius.behat.context.setup.product_taxon
                 - nedac.sylius_order_now_plugin.behat.context.setup.product
                 - nedac.sylius_order_now_plugin.behat.context.setup.product_option
 
@@ -12,8 +14,11 @@ default:
                 - sylius.behat.context.transform.product_option
                 - sylius.behat.context.transform.shared_storage
                 - sylius.behat.context.transform.lexical
+                - sylius.behat.context.transform.taxon
 
                 - sylius.behat.context.ui.shop.cart
+                - sylius.behat.context.ui.shop.product
                 - nedac.sylius_order_now_plugin.behat.context.ui.homepage
+                - nedac.sylius_order_now_plugin.behat.context.ui.product
             filters:
                 tags: "@order_now"

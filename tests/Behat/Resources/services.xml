@@ -11,6 +11,14 @@
         <service id="Tests\Nedac\SyliusOrderNowPlugin\Behat\Page\HomepageInterface"
                  alias="nedac.sylius_order_now_plugin.behat.page.homepage" />
 
+        <service id="nedac.sylius_order_now_plugin.behat.page.product_index"
+                 class="Tests\Nedac\SyliusOrderNowPlugin\Behat\Page\ProductIndex"
+                 parent="sylius.behat.symfony_page"
+                 public="false" />
+        <service id="Tests\Nedac\SyliusOrderNowPlugin\Behat\Page\ProductIndexInterface"
+                 alias="nedac.sylius_order_now_plugin.behat.page.product_index" />
+
+
         <service id="nedac.sylius_order_now_plugin.behat.context.setup.product_option"
                  class="Tests\Nedac\SyliusOrderNowPlugin\Behat\Context\Setup\ProductOptionContext">
             <argument key="$sharedStorage" type="service" id="sylius.behat.shared_storage" />
@@ -34,6 +42,11 @@
         <service id="nedac.sylius_order_now_plugin.behat.context.ui.homepage"
                  class="Tests\Nedac\SyliusOrderNowPlugin\Behat\Context\Ui\HomepageContext">
             <argument key="$homepage" type="service" id="nedac.sylius_order_now_plugin.behat.page.homepage" />
+        </service>
+
+        <service id="nedac.sylius_order_now_plugin.behat.context.ui.product"
+                 class="Tests\Nedac\SyliusOrderNowPlugin\Behat\Context\Ui\ProductContext">
+            <argument key="$indexPage" type="service" id="nedac.sylius_order_now_plugin.behat.page.product_index" />
         </service>
     </services>
 </container>
