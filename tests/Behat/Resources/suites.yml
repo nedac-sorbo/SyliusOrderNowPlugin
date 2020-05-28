@@ -7,11 +7,13 @@ default:
                 - sylius.behat.context.setup.channel
                 - sylius.behat.context.setup.taxonomy
                 - sylius.behat.context.setup.product_taxon
+                - sylius.behat.context.setup.product_association
                 - nedac.sylius_order_now_plugin.behat.context.setup.product
                 - nedac.sylius_order_now_plugin.behat.context.setup.product_option
 
                 - sylius.behat.context.transform.product
                 - sylius.behat.context.transform.product_option
+                - sylius.behat.context.transform.product_association_type
                 - sylius.behat.context.transform.shared_storage
                 - sylius.behat.context.transform.lexical
                 - sylius.behat.context.transform.taxon
