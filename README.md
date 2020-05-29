@@ -41,6 +41,7 @@ your project, please make sure they use the corresponding trait:
     - `ProductAssociation` -> `Nedac\SyliusOrderNowPlugin\Controller\ProductAssociationControllerTrait`
     - `Product` -> `Nedac\SyliusOrderNowPlugin\Controller\ProductControllerTrait`
     - `ProductReview` -> `Nedac\SyliusOrderNowPlugin\Controller\ProductReviewTrait`
+    > **_NOTE:_** *If the methods in the traits have already been implemented in the controller in your project then the logic will have to be merged.*
 
 4. If you have overridden controllers in your project and you've gone through step 3, please do not change your Sylius
 configuration for those controllers. Otherwise:
