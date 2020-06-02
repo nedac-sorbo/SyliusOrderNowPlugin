@@ -1,12 +1,12 @@
 .nedac-sylius-order-now-plugin-number-input {
-    width: 17.5%;
+    width: 20%;
     border: 1px solid rgba(34,36,38,.15);
     border-radius: 2.5px;
     color:#909090;
 }
 
 .nedac-sylius-order-now-plugin-dropdown {
-    width: 25%;
+    width: 27%;
     outline: 0;
     background-color: #fff;
     border: 1px solid rgba(34,36,38,.15);
