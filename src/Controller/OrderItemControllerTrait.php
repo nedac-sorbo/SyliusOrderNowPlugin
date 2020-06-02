@@ -86,20 +86,8 @@ trait OrderItemControllerTrait
             $this->flashHelper->addSuccessFlash($configuration, CartActions::ADD, $orderItem);
         } else {
             $errors = $form->getErrors();
-
             foreach ($errors as $error) {
-                $translator = $this->get('translator');
-                Assert::isInstanceOf($translator, TranslatorInterface::class);
-
-                /** @var TranslatorInterface $translator */
-                $message = $translator->trans(
-                    $error->getMessageTemplate(),
-                    $error->getMessageParameters(),
-                    'flashes',
-                    $request->getLocale()
-                );
-
-                $this->addFlash('error', $message);
+                $this->addFlash('error', $error->getMessage());
             }
         }
 
