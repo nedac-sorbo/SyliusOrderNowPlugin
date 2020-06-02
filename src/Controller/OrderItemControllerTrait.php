@@ -21,8 +21,6 @@ use Sylius\Component\Resource\Metadata\MetadataInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Contracts\Translation\TranslatorInterface;
-use Webmozart\Assert\Assert;
 
 /**
  * @property MetadataInterface $metadata
