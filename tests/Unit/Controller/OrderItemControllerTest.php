@@ -62,6 +62,73 @@ final class OrderItemControllerTest extends MockeryTestCase
         $this->assertInstanceOf(ResourceController::class, $controller);
     }
 
+    public function testThrowsWhenFormTypeNull(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        $configuration = Mockery::mock(RequestConfiguration::class);
+        $configuration
+            ->shouldReceive('getFormType')
+            ->once()
+            ->andReturnNull()
+        ;
+
+        $requestConfigurationFactory = Mockery::mock(RequestConfigurationFactoryInterface::class);
+        $requestConfigurationFactory
+            ->shouldReceive('create')
+            ->once()
+            ->andReturn($configuration)
+        ;
+
+        $newResource = Mockery::mock(OrderItemInterface::class);
+
+        $newResourceFactory = Mockery::mock(NewResourceFactoryInterface::class);
+        $newResourceFactory
+            ->shouldReceive('create')
+            ->once()
+            ->andReturn($newResource)
+        ;
+
+        $controller = Mockery::mock(OrderItemController::class)->makePartial();
+        $controller->shouldAllowMockingProtectedMethods();
+        $controller
+            ->shouldReceive('getCurrentCart')
+            ->once()
+            ->andReturn(Mockery::mock(OrderInterface::class))
+        ;
+        $controller
+            ->shouldReceive('isGrantedOr403')
+            ->once()
+        ;
+        $controller
+            ->shouldReceive('getQuantityModifier->modify')
+            ->with($newResource, 1)
+            ->once()
+        ;
+
+        $controller->__construct(
+            Mockery::mock(MetadataInterface::class),
+            $requestConfigurationFactory,
+            Mockery::mock(ViewHandlerInterface::class),
+            Mockery::mock(RepositoryInterface::class),
+            Mockery::mock(FactoryInterface::class),
+            $newResourceFactory,
+            Mockery::mock(ObjectManager::class),
+            Mockery::mock(SingleResourceProviderInterface::class),
+            Mockery::mock(ResourcesCollectionProviderInterface::class),
+            Mockery::mock(ResourceFormFactoryInterface::class),
+            Mockery::mock(RedirectHandlerInterface::class),
+            Mockery::mock(FlashHelperInterface::class),
+            Mockery::mock(AuthorizationCheckerInterface::class),
+            Mockery::mock(EventDispatcherInterface::class),
+            Mockery::mock(StateMachineInterface::class),
+            Mockery::mock(ResourceUpdateHandlerInterface::class),
+            Mockery::mock(ResourceDeleteHandlerInterface::class)
+        );
+
+        $controller->addAction(Mockery::mock(Request::class));
+    }
+
     public function testAddsFormErrorFlasher(): void
     {
         $configuration = Mockery::mock(RequestConfiguration::class);
@@ -199,5 +266,20 @@ final class OrderItemControllerTest extends MockeryTestCase
         ;
 
         $this->assertSame($newResponse, $controller->addAction($request));
+    }
+
+    public function testRedirectsToRefererWhenEventIsStopped(): void
+    {
+        $this->markTestIncomplete('TODO');
+    }
+
+    public function testReturnsEventResponse(): void
+    {
+        $this->markTestIncomplete('TODO');
+    }
+
+    public function testRedirectsToRefererWithSuccessFlash(): void
+    {
+        $this->markTestIncomplete('TODO');
     }
 }
