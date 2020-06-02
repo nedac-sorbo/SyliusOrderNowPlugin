@@ -144,6 +144,7 @@ configuration for those controllers. Otherwise:
         </div>
         <div class="ui bottom attached button nedac-order-now-button-container">
             {{ form_start(cardForm, {'action': path('nedac_shop_cart_add_item', {'productId': product.id}), 'attr': {'id': formId, 'novalidate': 'novalidate'}}) }}
+                {{ form_row(cardForm.cartItem.quantity) }}
                 {% if not product.simple %}
                     {% if product.variantSelectionMethodChoice %}
                         {% include 'Product/Show/_variants.html.twig' %}
@@ -151,7 +152,6 @@ configuration for those controllers. Otherwise:
                         {% include 'Product/Show/_options.html.twig' %}
                     {% endif %}
                 {% endif %}
-                {{ form_row(cardForm.cartItem.quantity) }}
                 <i class="add icon"></i>
             {{ form_end(cardForm) }}
         </div>
