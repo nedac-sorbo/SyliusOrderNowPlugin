@@ -18,9 +18,11 @@ use Sylius\Component\Order\Model\OrderItemInterface;
 use Sylius\Component\Order\Modifier\OrderItemQuantityModifierInterface;
 use Sylius\Component\Order\Modifier\OrderModifierInterface;
 use Sylius\Component\Resource\Metadata\MetadataInterface;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Webmozart\Assert\Assert;
 
 /**
  * @property MetadataInterface $metadata
@@ -52,8 +54,11 @@ trait OrderItemControllerTrait
 
         $this->getQuantityModifier()->modify($orderItem, 1);
 
+        $formType = $configuration->getFormType();
+        Assert::notNull($formType);
+
         $form = $this->getFormFactory()->create(
-            $configuration->getFormType(),
+            $formType,
             $this->createAddToCartCommand($cart, $orderItem),
             $configuration->getFormOptions()
         );
@@ -81,14 +86,18 @@ trait OrderItemControllerTrait
                 $configuration,
                 $orderItem
             );
-            if ($resourceControllerEvent->hasResponse()) {
-                return $resourceControllerEvent->getResponse();
+            if (
+                $resourceControllerEvent->hasResponse() &&
+                null !== $response = $resourceControllerEvent->getResponse()
+            ) {
+                return $response;
             }
 
             $this->flashHelper->addSuccessFlash($configuration, CartActions::ADD, $orderItem);
         } else {
             $errors = $form->getErrors();
             foreach ($errors as $error) {
+                Assert::isInstanceOf($error, FormError::class);
                 $this->addFlash('error', $error->getMessage());
             }
         }
