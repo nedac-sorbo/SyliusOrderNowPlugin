@@ -67,7 +67,7 @@ trait OrderItemControllerTrait
             if ($event->isStopped()) {
                 $this->flashHelper->addFlashFromEvent($configuration, $event);
 
-                return $this->redirectHandler->redirectToIndex($configuration, $orderItem);
+                return $this->redirectHandler->redirectToReferer($configuration);
             }
 
             $this->getOrderModifier()->addToOrder($addToCartCommand->getCart(), $addToCartCommand->getCartItem());
@@ -76,7 +76,11 @@ trait OrderItemControllerTrait
             $cartManager->persist($cart);
             $cartManager->flush();
 
-            $resourceControllerEvent = $this->eventDispatcher->dispatchPostEvent(CartActions::ADD, $configuration, $orderItem);
+            $resourceControllerEvent = $this->eventDispatcher->dispatchPostEvent(
+                CartActions::ADD,
+                $configuration,
+                $orderItem
+            );
             if ($resourceControllerEvent->hasResponse()) {
                 return $resourceControllerEvent->getResponse();
             }
