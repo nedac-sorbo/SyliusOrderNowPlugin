@@ -97,7 +97,6 @@ trait OrderItemControllerTrait
         } else {
             $errors = $form->getErrors();
             foreach ($errors as $error) {
-                Assert::isInstanceOf($error, FormError::class);
                 $this->addFlash('error', $error->getMessage());
             }
         }
