@@ -65,28 +65,33 @@
             <argument key="$productVariantFactory" type="service" id="sylius.custom_factory.product_variant" />
             <argument key="$objectManager" type="service" id="doctrine.orm.default_entity_manager" />
             <argument key="$slugGenerator" type="service" id="sylius.generator.slug" />
+            <argument key="$defaultVariantResolver" type="service" id="sylius.product_variant_resolver.default" />
         </service>
 
         <service id="nedac.sylius_order_now_plugin.behat.context.ui.homepage"
                  class="Tests\Nedac\SyliusOrderNowPlugin\Behat\Context\Ui\HomepageContext">
             <argument key="$homepage" type="service" id="nedac.sylius_order_now_plugin.behat.page.homepage" />
+            <argument key="$notificationChecker" type="service" id="sylius.behat.notification_checker" />
         </service>
 
         <service id="nedac.sylius_order_now_plugin.behat.context.ui.product"
                  class="Tests\Nedac\SyliusOrderNowPlugin\Behat\Context\Ui\ProductContext">
             <argument key="$indexPage" type="service" id="nedac.sylius_order_now_plugin.behat.page.product_index" />
             <argument key="$showPage" type="service" id="nedac.sylius_order_now_plugin.behat.page.product_show" />
+            <argument key="$notificationChecker" type="service" id="sylius.behat.notification_checker" />
         </service>
 
         <service id="nedac.sylius_order_now_plugin.behat.context.ui.cart_summary"
                  class="Tests\Nedac\SyliusOrderNowPlugin\Behat\Context\Ui\CartContext">
             <argument key="$page" type="service" id="nedac.sylius_order_now_plugin.behat.page.cart_summary" />
+            <argument key="$notificationChecker" type="service" id="sylius.behat.notification_checker" />
         </service>
 
         <service id="nedac.sylius_order_now_plugin.behat.context.ui.product_review"
                  class="Tests\Nedac\SyliusOrderNowPlugin\Behat\Context\Ui\ProductReviewContext">
             <argument key="$createPage" type="service" id="nedac.sylius_order_now_plugin.behat.page.product_review_create" />
             <argument key="$indexPage" type="service" id="nedac.sylius_order_now_plugin.behat.page.product_review_index" />
+            <argument key="$notificationChecker" type="service" id="sylius.behat.notification_checker" />
         </service>
     </services>
 </container>

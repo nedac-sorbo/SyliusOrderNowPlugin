@@ -9,4 +9,5 @@ use FriendsOfBehat\PageObjectExtension\Page\SymfonyPageInterface;
 interface ProductReviewIndexInterface extends SymfonyPageInterface
 {
     public function clickTheOrderNowButton(): void;
+    public function addToCartUsingOrderNowButton(string $quantity, string $code): void;
 }

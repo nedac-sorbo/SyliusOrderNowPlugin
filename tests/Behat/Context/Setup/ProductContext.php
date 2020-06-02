@@ -16,6 +16,7 @@ use Sylius\Component\Core\Repository\ProductRepositoryInterface;
 use Sylius\Component\Product\Factory\ProductFactoryInterface;
 use Sylius\Component\Product\Generator\SlugGeneratorInterface;
 use Sylius\Component\Product\Model\ProductOptionInterface;
+use Sylius\Component\Product\Resolver\ProductVariantResolverInterface;
 use Sylius\Component\Resource\Factory\FactoryInterface;
 use Webmozart\Assert\Assert;
 
@@ -28,6 +29,7 @@ final class ProductContext implements Context
     private FactoryInterface $channelPricingFactory;
     private ObjectManager $objectManager;
     private SlugGeneratorInterface $slugGenerator;
+    private ProductVariantResolverInterface $defaultVariantResolver;
 
     public function __construct(
         SharedStorageInterface $sharedStorage,
@@ -36,7 +38,8 @@ final class ProductContext implements Context
         FactoryInterface $productVariantFactory,
         FactoryInterface $channelPricingFactory,
         ObjectManager $objectManager,
-        SlugGeneratorInterface $slugGenerator
+        SlugGeneratorInterface $slugGenerator,
+        ProductVariantResolverInterface $defaultVariantResolver
     ) {
         $this->sharedStorage = $sharedStorage;
         $this->productRepository = $productRepository;
@@ -45,6 +48,7 @@ final class ProductContext implements Context
         $this->channelPricingFactory = $channelPricingFactory;
         $this->objectManager = $objectManager;
         $this->slugGenerator = $slugGenerator;
+        $this->defaultVariantResolver = $defaultVariantResolver;
     }
 
 
@@ -147,5 +151,30 @@ final class ProductContext implements Context
         }
 
         $this->saveProduct($product);
+    }
+
+    /**
+     * @Given /^(this product) is tracked by the inventory$/
+     * @Given /^(?:|the )("[^"]+" product) is(?:| also) tracked by the inventory$/
+     */
+    public function thisProductIsTrackedByTheInventory(ProductInterface $product): void
+    {
+        /** @var ProductVariantInterface $productVariant */
+        $productVariant = $this->defaultVariantResolver->getVariant($product);
+        $productVariant->setTracked(true);
+
+        $this->objectManager->flush();
+    }
+
+    /**
+     * @Given /^there (?:is|are) (\d+) unit(?:|s) of (product "([^"]+)") available in the inventory$/
+     */
+    public function thereIsQuantityOfProducts(string $quantity, ProductInterface $product): void
+    {
+        /** @var ProductVariantInterface $productVariant */
+        $productVariant = $this->defaultVariantResolver->getVariant($product);
+        $productVariant->setOnHand((int) $quantity);
+
+        $this->objectManager->flush();
     }
 }
