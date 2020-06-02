@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Nedac\SyliusOrderNowPlugin\Unit\Controller;
 
 use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Mockery;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
 use Nedac\SyliusOrderNowPlugin\Controller\OrderItemController;
@@ -24,6 +25,7 @@ use Sylius\Bundle\ResourceBundle\Controller\ResourceUpdateHandlerInterface;
 use Sylius\Bundle\ResourceBundle\Controller\SingleResourceProviderInterface;
 use Sylius\Bundle\ResourceBundle\Controller\StateMachineInterface;
 use Sylius\Bundle\ResourceBundle\Controller\ViewHandlerInterface;
+use Sylius\Bundle\ResourceBundle\Event\ResourceControllerEvent;
 use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Core\Model\OrderItemInterface;
 use Sylius\Component\Resource\Factory\FactoryInterface;
@@ -270,16 +272,473 @@ final class OrderItemControllerTest extends MockeryTestCase
 
     public function testRedirectsToRefererWhenEventIsStopped(): void
     {
-        $this->markTestIncomplete('TODO');
+        $configuration = Mockery::mock(RequestConfiguration::class);
+        $configuration
+            ->shouldReceive('getFormType')
+            ->once()
+            ->andReturn('FORM_TYPE')
+        ;
+        $configuration
+            ->shouldReceive('getFormOptions')
+            ->once()
+            ->andReturn([])
+        ;
+
+        $requestConfigurationFactory = Mockery::mock(RequestConfigurationFactoryInterface::class);
+        $requestConfigurationFactory
+            ->shouldReceive('create')
+            ->once()
+            ->andReturn($configuration)
+        ;
+
+        $newResponse = Mockery::mock(Response::class);
+
+        $redirectHandler = Mockery::mock(RedirectHandlerInterface::class);
+        $redirectHandler
+            ->shouldReceive('redirectToReferer')
+            ->with($configuration)
+            ->once()
+            ->andReturn($newResponse)
+        ;
+
+        $newResource = Mockery::mock(OrderItemInterface::class);
+
+        $newResourceFactory = Mockery::mock(NewResourceFactoryInterface::class);
+        $newResourceFactory
+            ->shouldReceive('create')
+            ->once()
+            ->andReturn($newResource)
+        ;
+
+        $command = Mockery::mock(AddToCartCommandInterface::class);
+
+        $form = Mockery::mock(FormInterface::class);
+        $form
+            ->shouldReceive('handleRequest->isValid')
+            ->once()
+            ->andReturn(true)
+        ;
+        $form
+            ->shouldReceive('getData')
+            ->once()
+            ->andReturn($command)
+        ;
+
+        $event = Mockery::mock(ResourceControllerEvent::class);
+        $event
+            ->shouldReceive('isStopped')
+            ->once()
+            ->andReturn(true)
+        ;
+
+        $eventDispatcher = Mockery::mock(EventDispatcherInterface::class);
+        $eventDispatcher
+            ->shouldReceive('dispatchPreEvent')
+            ->once()
+            ->andReturn($event)
+        ;
+
+        $flashHelper = Mockery::mock(FlashHelperInterface::class);
+        $flashHelper
+            ->shouldReceive('addFlashFromEvent')
+            ->once()
+        ;
+
+        $controller = Mockery::mock(OrderItemController::class)->makePartial();
+        $controller->shouldAllowMockingProtectedMethods();
+        $controller
+            ->shouldReceive('getCurrentCart')
+            ->once()
+            ->andReturn(Mockery::mock(OrderInterface::class))
+        ;
+        $controller
+            ->shouldReceive('isGrantedOr403')
+            ->once()
+        ;
+        $controller
+            ->shouldReceive('getQuantityModifier->modify')
+            ->with($newResource, 1)
+            ->once()
+        ;
+        $controller
+            ->shouldReceive('createAddToCartCommand')
+            ->once()
+            ->andReturn($command)
+        ;
+        $controller
+            ->shouldReceive('getFormFactory->create')
+            ->with('FORM_TYPE', $command, [])
+            ->once()
+            ->andReturn($form)
+        ;
+
+        $controller->__construct(
+            Mockery::mock(MetadataInterface::class),
+            $requestConfigurationFactory,
+            Mockery::mock(ViewHandlerInterface::class),
+            Mockery::mock(RepositoryInterface::class),
+            Mockery::mock(FactoryInterface::class),
+            $newResourceFactory,
+            Mockery::mock(ObjectManager::class),
+            Mockery::mock(SingleResourceProviderInterface::class),
+            Mockery::mock(ResourcesCollectionProviderInterface::class),
+            Mockery::mock(ResourceFormFactoryInterface::class),
+            $redirectHandler,
+            $flashHelper,
+            Mockery::mock(AuthorizationCheckerInterface::class),
+            $eventDispatcher,
+            Mockery::mock(StateMachineInterface::class),
+            Mockery::mock(ResourceUpdateHandlerInterface::class),
+            Mockery::mock(ResourceDeleteHandlerInterface::class)
+        );
+
+        $request = Mockery::mock(Request::class);
+        $request
+            ->shouldReceive('isMethod')
+            ->with('POST')
+            ->once()
+            ->andReturn(true)
+        ;
+
+        $this->assertSame($newResponse, $controller->addAction($request));
     }
 
     public function testReturnsEventResponse(): void
     {
-        $this->markTestIncomplete('TODO');
+        $configuration = Mockery::mock(RequestConfiguration::class);
+        $configuration
+            ->shouldReceive('getFormType')
+            ->once()
+            ->andReturn('FORM_TYPE')
+        ;
+        $configuration
+            ->shouldReceive('getFormOptions')
+            ->once()
+            ->andReturn([])
+        ;
+
+        $requestConfigurationFactory = Mockery::mock(RequestConfigurationFactoryInterface::class);
+        $requestConfigurationFactory
+            ->shouldReceive('create')
+            ->once()
+            ->andReturn($configuration)
+        ;
+
+        $newResponse = Mockery::mock(Response::class);
+
+        $newResource = Mockery::mock(OrderItemInterface::class);
+
+        $newResourceFactory = Mockery::mock(NewResourceFactoryInterface::class);
+        $newResourceFactory
+            ->shouldReceive('create')
+            ->once()
+            ->andReturn($newResource)
+        ;
+
+        $command = Mockery::mock(AddToCartCommandInterface::class);
+        $command
+            ->shouldReceive('getCart')
+            ->once()
+            ->andReturn(Mockery::mock(OrderInterface::class))
+        ;
+        $command
+            ->shouldReceive('getCartItem')
+            ->once()
+            ->andReturn(Mockery::mock(OrderItemInterface::class))
+        ;
+
+        $form = Mockery::mock(FormInterface::class);
+        $form
+            ->shouldReceive('handleRequest->isValid')
+            ->once()
+            ->andReturn(true)
+        ;
+        $form
+            ->shouldReceive('getData')
+            ->once()
+            ->andReturn($command)
+        ;
+
+        $event = Mockery::mock(ResourceControllerEvent::class);
+        $event
+            ->shouldReceive('isStopped')
+            ->once()
+            ->andReturn(false)
+        ;
+
+        $postEvent = Mockery::mock(ResourceControllerEvent::class);
+        $postEvent
+            ->shouldReceive('hasResponse')
+            ->once()
+            ->andReturn(true)
+        ;
+        $postEvent
+            ->shouldReceive('getResponse')
+            ->once()
+            ->andReturn($newResponse)
+        ;
+
+        $eventDispatcher = Mockery::mock(EventDispatcherInterface::class);
+        $eventDispatcher
+            ->shouldReceive('dispatchPreEvent')
+            ->once()
+            ->andReturn($event)
+        ;
+        $eventDispatcher
+            ->shouldReceive('dispatchPostEvent')
+            ->once()
+            ->andReturn($postEvent)
+        ;
+
+        $manager = Mockery::mock(EntityManagerInterface::class);
+        $manager
+            ->shouldReceive('persist')
+            ->once()
+        ;
+        $manager
+            ->shouldReceive('flush')
+            ->once()
+        ;
+
+        $controller = Mockery::mock(OrderItemController::class)->makePartial();
+        $controller->shouldAllowMockingProtectedMethods();
+        $controller
+            ->shouldReceive('getCurrentCart')
+            ->once()
+            ->andReturn(Mockery::mock(OrderInterface::class))
+        ;
+        $controller
+            ->shouldReceive('isGrantedOr403')
+            ->once()
+        ;
+        $controller
+            ->shouldReceive('getQuantityModifier->modify')
+            ->with($newResource, 1)
+            ->once()
+        ;
+        $controller
+            ->shouldReceive('createAddToCartCommand')
+            ->once()
+            ->andReturn($command)
+        ;
+        $controller
+            ->shouldReceive('getFormFactory->create')
+            ->with('FORM_TYPE', $command, [])
+            ->once()
+            ->andReturn($form)
+        ;
+        $controller
+            ->shouldReceive('getOrderModifier->addToOrder')
+            ->once()
+        ;
+        $controller
+            ->shouldReceive('getCartManager')
+            ->once()
+            ->andReturn($manager)
+        ;
+
+        $controller->__construct(
+            Mockery::mock(MetadataInterface::class),
+            $requestConfigurationFactory,
+            Mockery::mock(ViewHandlerInterface::class),
+            Mockery::mock(RepositoryInterface::class),
+            Mockery::mock(FactoryInterface::class),
+            $newResourceFactory,
+            Mockery::mock(ObjectManager::class),
+            Mockery::mock(SingleResourceProviderInterface::class),
+            Mockery::mock(ResourcesCollectionProviderInterface::class),
+            Mockery::mock(ResourceFormFactoryInterface::class),
+            Mockery::mock(RedirectHandlerInterface::class),
+            Mockery::mock(FlashHelperInterface::class),
+            Mockery::mock(AuthorizationCheckerInterface::class),
+            $eventDispatcher,
+            Mockery::mock(StateMachineInterface::class),
+            Mockery::mock(ResourceUpdateHandlerInterface::class),
+            Mockery::mock(ResourceDeleteHandlerInterface::class)
+        );
+
+        $request = Mockery::mock(Request::class);
+        $request
+            ->shouldReceive('isMethod')
+            ->with('POST')
+            ->once()
+            ->andReturn(true)
+        ;
+
+        $this->assertSame($newResponse, $controller->addAction($request));
     }
 
     public function testRedirectsToRefererWithSuccessFlash(): void
     {
-        $this->markTestIncomplete('TODO');
+        $configuration = Mockery::mock(RequestConfiguration::class);
+        $configuration
+            ->shouldReceive('getFormType')
+            ->once()
+            ->andReturn('FORM_TYPE')
+        ;
+        $configuration
+            ->shouldReceive('getFormOptions')
+            ->once()
+            ->andReturn([])
+        ;
+
+        $requestConfigurationFactory = Mockery::mock(RequestConfigurationFactoryInterface::class);
+        $requestConfigurationFactory
+            ->shouldReceive('create')
+            ->once()
+            ->andReturn($configuration)
+        ;
+
+        $newResponse = Mockery::mock(Response::class);
+
+        $newResource = Mockery::mock(OrderItemInterface::class);
+
+        $newResourceFactory = Mockery::mock(NewResourceFactoryInterface::class);
+        $newResourceFactory
+            ->shouldReceive('create')
+            ->once()
+            ->andReturn($newResource)
+        ;
+
+        $command = Mockery::mock(AddToCartCommandInterface::class);
+        $command
+            ->shouldReceive('getCart')
+            ->once()
+            ->andReturn(Mockery::mock(OrderInterface::class))
+        ;
+        $command
+            ->shouldReceive('getCartItem')
+            ->once()
+            ->andReturn(Mockery::mock(OrderItemInterface::class))
+        ;
+
+        $form = Mockery::mock(FormInterface::class);
+        $form
+            ->shouldReceive('handleRequest->isValid')
+            ->once()
+            ->andReturn(true)
+        ;
+        $form
+            ->shouldReceive('getData')
+            ->once()
+            ->andReturn($command)
+        ;
+
+        $event = Mockery::mock(ResourceControllerEvent::class);
+        $event
+            ->shouldReceive('isStopped')
+            ->once()
+            ->andReturn(false)
+        ;
+
+        $postEvent = Mockery::mock(ResourceControllerEvent::class);
+        $postEvent
+            ->shouldReceive('hasResponse')
+            ->once()
+            ->andReturn(false)
+        ;
+
+        $eventDispatcher = Mockery::mock(EventDispatcherInterface::class);
+        $eventDispatcher
+            ->shouldReceive('dispatchPreEvent')
+            ->once()
+            ->andReturn($event)
+        ;
+        $eventDispatcher
+            ->shouldReceive('dispatchPostEvent')
+            ->once()
+            ->andReturn($postEvent)
+        ;
+
+        $manager = Mockery::mock(EntityManagerInterface::class);
+        $manager
+            ->shouldReceive('persist')
+            ->once()
+        ;
+        $manager
+            ->shouldReceive('flush')
+            ->once()
+        ;
+
+        $flashHelper = Mockery::mock(FlashHelperInterface::class);
+        $flashHelper
+            ->shouldReceive('addSuccessFlash')
+            ->once()
+        ;
+
+        $redirectHandler = Mockery::mock(RedirectHandlerInterface::class);
+        $redirectHandler
+            ->shouldReceive('redirectToReferer')
+            ->with($configuration)
+            ->once()
+            ->andReturn($newResponse)
+        ;
+
+        $controller = Mockery::mock(OrderItemController::class)->makePartial();
+        $controller->shouldAllowMockingProtectedMethods();
+        $controller
+            ->shouldReceive('getCurrentCart')
+            ->once()
+            ->andReturn(Mockery::mock(OrderInterface::class))
+        ;
+        $controller
+            ->shouldReceive('isGrantedOr403')
+            ->once()
+        ;
+        $controller
+            ->shouldReceive('getQuantityModifier->modify')
+            ->with($newResource, 1)
+            ->once()
+        ;
+        $controller
+            ->shouldReceive('createAddToCartCommand')
+            ->once()
+            ->andReturn($command)
+        ;
+        $controller
+            ->shouldReceive('getFormFactory->create')
+            ->with('FORM_TYPE', $command, [])
+            ->once()
+            ->andReturn($form)
+        ;
+        $controller
+            ->shouldReceive('getOrderModifier->addToOrder')
+            ->once()
+        ;
+        $controller
+            ->shouldReceive('getCartManager')
+            ->once()
+            ->andReturn($manager)
+        ;
+
+        $controller->__construct(
+            Mockery::mock(MetadataInterface::class),
+            $requestConfigurationFactory,
+            Mockery::mock(ViewHandlerInterface::class),
+            Mockery::mock(RepositoryInterface::class),
+            Mockery::mock(FactoryInterface::class),
+            $newResourceFactory,
+            Mockery::mock(ObjectManager::class),
+            Mockery::mock(SingleResourceProviderInterface::class),
+            Mockery::mock(ResourcesCollectionProviderInterface::class),
+            Mockery::mock(ResourceFormFactoryInterface::class),
+            $redirectHandler,
+            $flashHelper,
+            Mockery::mock(AuthorizationCheckerInterface::class),
+            $eventDispatcher,
+            Mockery::mock(StateMachineInterface::class),
+            Mockery::mock(ResourceUpdateHandlerInterface::class),
+            Mockery::mock(ResourceDeleteHandlerInterface::class)
+        );
+
+        $request = Mockery::mock(Request::class);
+        $request
+            ->shouldReceive('isMethod')
+            ->with('POST')
+            ->once()
+            ->andReturn(true)
+        ;
+
+        $this->assertSame($newResponse, $controller->addAction($request));
     }
 }
