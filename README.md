@@ -175,7 +175,7 @@ configuration for those controllers. Otherwise:
     {% endblock %}
 
     {% block integer_widget %}
-        <input class="nedac-sylius-order-now-plugin-number-input" type="number" name="{{ full_name }}" value="1" />
+        <input class="nedac-sylius-order-now-plugin-number-input" type="number" name="{{ full_name }}" value="1" min="1" />
     {% endblock %}
 
     {% block choice_widget %}
