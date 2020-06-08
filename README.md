@@ -79,7 +79,218 @@ configuration for those controllers. Otherwise:
         resource: '@NedacSyliusOrderNowPlugin/Resources/config/shop_routing.yml'
     ```
 
-6. We also need to add/override some templates:
+6. When using Sylius 1.7, add/override templates like below (if on Sylius 1.6 skip this step):
+    ```twig
+    {# templates/bundles/SyliusShopBundle/Homepage/_carousel.html.twig #}
+
+    <div class="carousel-wrapper">
+        <div class="carousel">
+            {% for product in products %}
+                <div class="carousel-item">
+                    {% include '@SyliusShop/Product/_box.html.twig' with {'cardForm': forms[loop.index - 1]} %}
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="carousel-nav">
+            <button class="carousel-left ui huge black icon button">
+                <i class="left arrow icon"></i>
+            </button>
+            <button class="carousel-right ui huge black icon button">
+                <i class="right arrow icon"></i>
+            </button>
+        </div>
+    </div>
+    ```
+    ```twig
+    {# templates/bundles/SyliusShopBundle/Homepage/_list.html.twig #}
+
+    {% if products|length == 4 %}
+        {% set columns = "two" %}
+    {% endif %}
+    {% if products|length == 3 %}
+        {% set columns = "three odd doubling" %}
+    {% endif %}
+
+    <div class="ui {{ columns|default('') }} cards">
+        {% for product in products %}
+            {% include '@SyliusShop/Product/_box.html.twig' with {'cardForm': forms[loop.index - 1]} %}
+        {% endfor %}
+    </div>
+    ```
+    ```twig
+    {# templates/bundles/SyliusShopBundle/Product/Box/_content.html.twig #}
+
+    {% import "@SyliusShop/Common/Macro/money.html.twig" as money %}
+
+    {% form_theme cardForm 'form/product_card_form_theme.html.twig' %}
+
+    {% set formId = 'nedac-sylius-order-now-plugin-form-' ~ product.id %}
+
+    <div class="ui fluid card" {{ sylius_test_html_attribute('product') }}>
+        <a href="{{ path('sylius_shop_product_show', {'slug': product.slug, '_locale': product.translation.locale}) }}" class="blurring dimmable image">
+            <div class="ui dimmer">
+                <div class="content">
+                    <div class="center">
+                        <div class="ui inverted button">{{ 'sylius.ui.view_more'|trans }}</div>
+                    </div>
+                </div>
+            </div>
+            {% include '@SyliusShop/Product/_mainImage.html.twig' with {'product': product} %}
+        </a>
+        <div class="content" {{ sylius_test_html_attribute('product-content') }}>
+            <a href="{{ path('sylius_shop_product_show', {'slug': product.slug, '_locale': product.translation.locale}) }}" class="header sylius-product-name" {{ sylius_test_html_attribute('product-name', product.name) }}>{{ product.name }}</a>
+            {% if not product.variants.empty() %}
+                <div class="sylius-product-price" {{ sylius_test_html_attribute('product-price') }}>{{ money.calculatePrice(product|sylius_resolve_variant) }}</div>
+            {% endif %}
+        </div>
+        <div class="ui bottom attached button nedac-order-now-button-container">
+            {{ form_start(cardForm, {'action': path('nedac_shop_cart_add_item', {'productId': product.id}), 'attr': {'id': formId, 'novalidate': 'novalidate'}}) }}
+            {{ form_row(cardForm.cartItem.quantity) }}
+            {% if not product.simple %}
+                {% if product.variantSelectionMethodChoice %}
+                    {% include 'Product/Show/_variants.html.twig' %}
+                {% else %}
+                    {% include 'Product/Show/_options.html.twig' %}
+                {% endif %}
+            {% endif %}
+            <i class="add icon"></i>
+            {{ form_end(cardForm) }}
+        </div>
+    </div>
+    ```
+    ```twig
+    {# templates/bundles/SyliusShopBundle/Product/Index/_main.html.twig #}
+
+    {% import '@SyliusUi/Macro/messages.html.twig' as messages %}
+    {% import '@SyliusUi/Macro/pagination.html.twig' as pagination %}
+
+    {{ sylius_template_event('sylius.shop.product.index.search', _context) }}
+
+    <div class="ui clearing hidden divider"></div>
+
+    {{ sylius_template_event('sylius.shop.product.index.before_list', {'products': resources.data}) }}
+
+    {% if resources.data|length > 0 %}
+        <div class="ui three cards" id="products" {{ sylius_test_html_attribute('products') }}>
+            {% for product in resources.data %}
+                {% include '@SyliusShop/Product/_box.html.twig' with {'cardForm': forms[loop.index - 1]} %}
+            {% endfor %}
+        </div>
+        <div class="ui hidden divider"></div>
+
+        {{ sylius_template_event('sylius.shop.product.index.before_pagination', {'products': resources.data}) }}
+
+        {{ pagination.simple(resources.data) }}
+    {% else %}
+        {{ messages.info('sylius.ui.no_results_to_display') }}
+    {% endif %}
+    ```
+    ```twig
+    {# templates/bundles/SyliusShopBundle/Product/_box.html.twig #}
+
+    {{ sylius_template_event('sylius.shop.product.index.box', {'product': product, 'cardForm': cardForm}) }}
+    ```
+    ```twig
+    {# templates/bundles/SyliusShopBundle/Product/_horizontalList.html.twig #}
+
+    <div class="ui four doubling cards">
+        {% for product in products %}
+            {% include '@SyliusShop/Product/_box.html.twig' with {'cardForm': forms[loop.index - 1]} %}
+        {% endfor %}
+    </div>
+    ```
+    ```twig
+    {# templates/form/product_card_form_theme.html.twig #}
+
+    {% block form_label %}
+    {% endblock %}
+
+    {% block integer_widget %}
+        <input class="nedac-sylius-order-now-plugin-number-input" type="number" name="{{ full_name }}" value="1" min="1" />
+    {% endblock %}
+
+    {% block choice_widget %}
+        {%- if required and placeholder is none and not placeholder_in_choices and not multiple and (attr.size is not defined or attr.size <= 1) -%}
+            {% set required = false %}
+        {%- endif -%}
+        <select class="nedac-sylius-order-now-plugin-dropdown" name="{{ full_name }}" {% if multiple %} multiple="multiple"{% endif %}>
+            {%- if placeholder is not none -%}
+                <option value=""{% if required and value is empty %} selected="selected"{% endif %}>{{ placeholder != '' ? (translation_domain is same as(false) ? placeholder : placeholder|trans({}, translation_domain)) }}</option>
+            {%- endif -%}
+            {%- if preferred_choices|length > 0 -%}
+                {% set options = preferred_choices %}
+                {% set render_preferred_choices = true %}
+                {{- block('choice_widget_options') -}}
+                {%- if choices|length > 0 and separator is not none -%}
+                    <option disabled="disabled">{{ separator }}</option>
+                {%- endif -%}
+            {%- endif -%}
+            {%- set options = choices -%}
+            {%- set render_preferred_choices = false -%}
+            {{- block('choice_widget_options') -}}
+        </select>
+    {% endblock %}
+
+    {% block form_row %}
+        {{- form_widget(form) -}}
+        {{- form_errors(form) -}}
+    {% endblock %}
+
+    {%- block form_widget_compound -%}
+        {%- if form is rootform -%}
+            {{ form_errors(form) }}
+        {%- endif -%}
+        {{- block('form_rows') -}}
+        {{- form_rest(form) -}}
+    {%- endblock form_widget_compound -%}
+    ```
+    ```twig
+    {# templates/Product/Show/_options.html.twig #}
+
+    {% for option_form in cardForm.cartItem.variant %}
+        {{ form_row(option_form, { 'attr': { 'data-option': option_form.vars.name } }) }}
+    {% endfor %}
+    ```
+    ```twig
+    {# templates/Product/Show/_variants.html.twig #}
+
+    {% import "@SyliusShop/Common/Macro/money.html.twig" as money %}
+
+    <table class="ui single line small table" id="sylius-product-variants">
+        <thead>
+        <tr>
+            <th>{{ 'sylius.ui.variant'|trans }}</th>
+            <th>{{ 'sylius.ui.price'|trans }}</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for key, variant in product.variants %}
+            <tr>
+                <td>
+                    {{ variant.name }}
+                    {% if product.hasOptions() %}
+                        <div class="ui horizontal divided list">
+                            {% for optionValue in variant.optionValues %}
+                                <div class="item">
+                                    {{ optionValue.value }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </td>
+                <td class="sylius-product-variant-price">{{ money.calculatePrice(variant) }}</td>
+                <td class="right aligned">
+                    {{ form_widget(cardForm.cartItem.variant[key], {'label': false}) }}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    ```
+
+7. If on Sylius 1.6, add/override templates as follows (if on Sylius 1.7 skip this step):
     ```twig
     {# templates/bundles/SyliusShopBundle/Product/Index/_main.html.twig #}
 
@@ -258,7 +469,7 @@ configuration for those controllers. Otherwise:
     </table>
     ```
 
-7. Install assets:
+8. Install assets:
     ```bash
     bin/console sylius:install:assets
     ```
