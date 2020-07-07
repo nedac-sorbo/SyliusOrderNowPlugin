@@ -8,6 +8,7 @@ use Behat\Mink\Exception\DriverException;
 use Behat\Mink\Exception\ElementNotFoundException;
 use Behat\Mink\Exception\UnsupportedDriverActionException;
 use FriendsOfBehat\PageObjectExtension\Page\SymfonyPage;
+use Webmozart\Assert\Assert;
 
 abstract class AbstractOrderNowButtonPage extends SymfonyPage
 {
@@ -18,7 +19,7 @@ abstract class AbstractOrderNowButtonPage extends SymfonyPage
     public function clickTheOrderNowButton(): void
     {
         $this->getDriver()->evaluateScript(<<<JS
-document.getElementsByClassName('nedac-order-now-button-container')[0].click();
+document.querySelector('[data-test-order-now-button-container]').click();
 JS
         );
     }
@@ -27,8 +28,8 @@ JS
      * @param string $quantity
      * @param string $code
      * @throws DriverException
-     * @throws UnsupportedDriverActionException
      * @throws ElementNotFoundException
+     * @throws UnsupportedDriverActionException
      */
     public function addToCartUsingOrderNowButton(string $quantity, string $code): void
     {
@@ -36,16 +37,23 @@ JS
 
         // Set quantity
         $input = $document->find(
-            'css',
-            '.nedac-sylius-order-now-plugin-number-input'
+            'xpath',
+            'descendant::*[@data-test-order-now-number-input]'
         );
+
+        Assert::notNull($input);
+
         $input->setValue($quantity);
 
         // Set option
-        $document->selectFieldOption(
-            'nedac_sylius_order_now_plugin_add_to_cart[cartItem][variant][Color]',
-            $code
+        $select = $document->find(
+            'xpath',
+            'descendant::*[@data-test-order-now-dropdown]'
         );
+
+        Assert::notNull($select);
+
+        $select->selectOption($code);
 
         $this->clickTheOrderNowButton();
     }
