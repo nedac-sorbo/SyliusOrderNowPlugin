@@ -1,7 +1,6 @@
 language: php
 os: linux
 dist: bionic
-sudo: true
 
 php:
   - '7.4'
