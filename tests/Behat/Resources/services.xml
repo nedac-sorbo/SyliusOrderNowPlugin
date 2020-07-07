@@ -68,6 +68,12 @@
             <argument key="$defaultVariantResolver" type="service" id="sylius.product_variant_resolver.default" />
         </service>
 
+        <service id="nedac.sylius_order_now_plugin.behat.context.setup.channel"
+                 class="Tests\Nedac\SyliusOrderNowPlugin\Behat\Context\Setup\ChannelContext">
+            <argument key="$repository" type="service" id="sylius.repository.channel" />
+            <argument key="$sharedStorage" type="service" id="sylius.behat.shared_storage" />
+        </service>
+
         <service id="nedac.sylius_order_now_plugin.behat.context.ui.homepage"
                  class="Tests\Nedac\SyliusOrderNowPlugin\Behat\Context\Ui\HomepageContext">
             <argument key="$homepage" type="service" id="nedac.sylius_order_now_plugin.behat.page.homepage" />
