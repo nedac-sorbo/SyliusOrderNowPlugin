@@ -72,6 +72,7 @@ jobs:
     - name: Sylius 1.7 Bootstrap Theme
       env:
         - TEST_APP_VERSION=master
+        - THEME=true
     - name: Sylius 1.7
       env:
         - TEST_APP_VERSION=master
