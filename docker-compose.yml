@@ -50,7 +50,6 @@ services:
     image: selenium/standalone-chrome-debug:latest
     volumes:
       - /dev/shm:/dev/shm
-      - ./tests/Resources/video:/video
     ports:
       - "5900:5900"
     network_mode: host
