@@ -4,6 +4,15 @@
     <services>
         <defaults public="true" />
 
+        <service id="sylius.behat.notification_accessor"
+                 class="Tests\Nedac\SyliusOrderNowPlugin\Behat\Service\Accessor\NotificationAccessor">
+            <argument key="$session" type="service" id="behat.mink.default_session" />
+        </service>
+        <service id="sylius.behat.notification_checker"
+                 class="Tests\Nedac\SyliusOrderNowPlugin\Behat\Service\NotificationChecker">
+            <argument key="$notificationAccessor" type="service" id="sylius.behat.notification_accessor" />
+        </service>
+
         <service id="nedac.sylius_order_now_plugin.behat.page.homepage"
                  class="Tests\Nedac\SyliusOrderNowPlugin\Behat\Page\Homepage"
                  parent="sylius.behat.symfony_page"
