@@ -108,5 +108,13 @@
             <argument key="$indexPage" type="service" id="nedac.sylius_order_now_plugin.behat.page.product_review_index" />
             <argument key="$notificationChecker" type="service" id="sylius.behat.notification_checker" />
         </service>
+
+        <service id="nedac.sylius_order_now_plugin.behat.hook.clear"
+                 class="Tests\Nedac\SyliusOrderNowPlugin\Behat\Hook\ClearContext">
+            <argument type="service" id="sylius.repository.order_item" />
+            <argument type="service" id="sylius.repository.product" />
+            <argument type="service" id="sylius.repository.taxon" />
+            <argument type="service" id="sylius.repository.product_option" />
+        </service>
     </services>
 </container>

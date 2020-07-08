@@ -38,6 +38,8 @@ default:
                 tags: "@theme_setup"
         theme:
             contexts:
+                - nedac.sylius_order_now_plugin.behat.hook.clear
+
                 - sylius.behat.context.setup.taxonomy
                 - sylius.behat.context.setup.product_taxon
                 - sylius.behat.context.setup.product_association
