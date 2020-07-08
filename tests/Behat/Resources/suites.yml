@@ -57,9 +57,9 @@ default:
                 - sylius.behat.context.ui.shop.cart
                 - sylius.behat.context.ui.shop.product
                 - sylius.behat.context.ui.shop.product_review
-                - nedac.sylius_order_now_plugin.behat.context.ui.homepage
-                - nedac.sylius_order_now_plugin.behat.context.ui.product
-                - nedac.sylius_order_now_plugin.behat.context.ui.cart_summary
-                - nedac.sylius_order_now_plugin.behat.context.ui.product_review
+                - nedac.sylius_order_now_plugin.behat.context.ui.homepage_theme
+                - nedac.sylius_order_now_plugin.behat.context.ui.product_theme
+                - nedac.sylius_order_now_plugin.behat.context.ui.cart_summary_theme
+                - nedac.sylius_order_now_plugin.behat.context.ui.product_review_theme
             filters:
                 tags: "@theme"
