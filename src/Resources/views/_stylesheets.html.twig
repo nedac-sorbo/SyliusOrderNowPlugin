@@ -1,4 +1,4 @@
 {% set href = asset('/bundles/nedacsyliusordernowplugin/nedac-sylius-order-now-plugin.css') %}
-{% if not href starts with '/bundles/_themes/' %}
+{% if not (href starts with '/bundles/_themes/') %}
     <link rel="stylesheet" href="{{ href }}">
 {% endif %}
