@@ -12,13 +12,12 @@ use Sylius\Bundle\ResourceBundle\Controller\NewResourceFactoryInterface;
 use Sylius\Bundle\ResourceBundle\Controller\RedirectHandlerInterface;
 use Sylius\Bundle\ResourceBundle\Controller\RequestConfiguration;
 use Sylius\Bundle\ResourceBundle\Controller\RequestConfigurationFactoryInterface;
+use Sylius\Component\Core\Model\OrderItemInterface;
 use Sylius\Component\Order\CartActions;
 use Sylius\Component\Order\Model\OrderInterface;
-use Sylius\Component\Order\Model\OrderItemInterface;
 use Sylius\Component\Order\Modifier\OrderItemQuantityModifierInterface;
 use Sylius\Component\Order\Modifier\OrderModifierInterface;
 use Sylius\Component\Resource\Metadata\MetadataInterface;
-use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -100,6 +99,14 @@ trait OrderItemControllerTrait
                 $this->addFlash('error', $error->getMessage());
             }
         }
+
+        $parameters = $configuration->getParameters();
+        $redirect = $parameters->get('redirect');
+        if (null === $redirect) {
+            $redirect = [];
+        }
+        $redirect['referer'] = $configuration->getRedirectReferer() . '#' . $orderItem->getProduct()->getId();
+        $parameters->set('redirect', $redirect);
 
         return $this->redirectHandler->redirectToReferer($configuration);
     }
