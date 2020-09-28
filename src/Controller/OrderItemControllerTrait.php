@@ -105,8 +105,11 @@ trait OrderItemControllerTrait
         if (null === $redirect) {
             $redirect = [];
         }
-        $redirect['referer'] = $configuration->getRedirectReferer() . '#' . $orderItem->getProduct()->getId();
-        $parameters->set('redirect', $redirect);
+        $product = $orderItem->getProduct();
+        if (null !== $product) {
+            $redirect['referer'] = $configuration->getRedirectReferer() . '#' . $product->getId();
+            $parameters->set('redirect', $redirect);
+        }
 
         return $this->redirectHandler->redirectToReferer($configuration);
     }

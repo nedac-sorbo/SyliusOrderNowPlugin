@@ -14,6 +14,7 @@ use Sylius\Bundle\ResourceBundle\Controller\AuthorizationCheckerInterface;
 use Sylius\Bundle\ResourceBundle\Controller\EventDispatcherInterface;
 use Sylius\Bundle\ResourceBundle\Controller\FlashHelperInterface;
 use Sylius\Bundle\ResourceBundle\Controller\NewResourceFactoryInterface;
+use Sylius\Bundle\ResourceBundle\Controller\Parameters;
 use Sylius\Bundle\ResourceBundle\Controller\RedirectHandlerInterface;
 use Sylius\Bundle\ResourceBundle\Controller\RequestConfiguration;
 use Sylius\Bundle\ResourceBundle\Controller\RequestConfigurationFactoryInterface;
@@ -133,6 +134,13 @@ final class OrderItemControllerTest extends MockeryTestCase
 
     public function testAddsFormErrorFlasher(): void
     {
+        $parameters = Mockery::mock(Parameters::class);
+        $parameters
+            ->shouldReceive('get')
+            ->andReturnNull()
+        ;
+        $parameters->shouldReceive('set');
+
         $configuration = Mockery::mock(RequestConfiguration::class);
         $configuration
             ->shouldReceive('getFormType')
@@ -143,6 +151,10 @@ final class OrderItemControllerTest extends MockeryTestCase
             ->shouldReceive('getFormOptions')
             ->once()
             ->andReturn([])
+        ;
+        $configuration
+            ->shouldReceive('getParameters')
+            ->andReturn($parameters)
         ;
 
         $requestConfigurationFactory = Mockery::mock(RequestConfigurationFactoryInterface::class);
@@ -163,6 +175,10 @@ final class OrderItemControllerTest extends MockeryTestCase
         ;
 
         $newResource = Mockery::mock(OrderItemInterface::class);
+        $newResource
+            ->shouldReceive('getProduct')
+            ->andReturnNull()
+        ;
 
         $newResourceFactory = Mockery::mock(NewResourceFactoryInterface::class);
         $newResourceFactory
@@ -570,6 +586,13 @@ final class OrderItemControllerTest extends MockeryTestCase
 
     public function testRedirectsToRefererWithSuccessFlash(): void
     {
+        $parameters = Mockery::mock(Parameters::class);
+        $parameters
+            ->shouldReceive('get')
+            ->andReturnNull()
+        ;
+        $parameters->shouldReceive('set');
+
         $configuration = Mockery::mock(RequestConfiguration::class);
         $configuration
             ->shouldReceive('getFormType')
@@ -580,6 +603,10 @@ final class OrderItemControllerTest extends MockeryTestCase
             ->shouldReceive('getFormOptions')
             ->once()
             ->andReturn([])
+        ;
+        $configuration
+            ->shouldReceive('getParameters')
+            ->andReturn($parameters)
         ;
 
         $requestConfigurationFactory = Mockery::mock(RequestConfigurationFactoryInterface::class);
@@ -592,6 +619,10 @@ final class OrderItemControllerTest extends MockeryTestCase
         $newResponse = Mockery::mock(Response::class);
 
         $newResource = Mockery::mock(OrderItemInterface::class);
+        $newResource
+            ->shouldReceive('getProduct')
+            ->andReturnNull()
+        ;
 
         $newResourceFactory = Mockery::mock(NewResourceFactoryInterface::class);
         $newResourceFactory
