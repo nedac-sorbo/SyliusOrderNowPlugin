@@ -5,12 +5,15 @@ services:
     build:
       context: .
       target: sylius_order_now_plugin_php
-    image: nedac/sylius_order_now_plugin_php:latest
+      network: host
+    image: ghcr.io/nedac-sorbo/sylius_order_now_plugin_php:latest
     environment:
       - APP_ENV=test
       - DATABASE_URL=mysql://sylius:order_now@127.0.0.1:3306/sylius_order_now
     volumes:
-      - .:/srv/sylius
+      - .:/srv/sylius/vendor/nedac/sylius-minimum-order-value-plugin
+      - ./etc/build:/srv/sylius/etc/build
+      - public-media:/srv/sylius/public/media:rw
     network_mode: host
 
   mysql:
@@ -20,36 +23,37 @@ services:
       - MYSQL_DATABASE=sylius_order_now
       - MYSQL_USER=sylius
       - MYSQL_PASSWORD=order_now
-    ports:
-      - "3306:3306"
     network_mode: host
 
   nginx:
     build:
       context: .
       target: sylius_order_now_plugin_nginx
-    image: nedac/sylius_order_now_plugin_nginx:latest
+      network: host
+    image: ghcr.io/nedac-sorbo/sylius_order_now_plugin_nginx:latest
     volumes:
-      - .:/srv/sylius
-    ports:
-      - "8080:8080"
+      - public-media:/srv/sylius/public/media:ro,nocopy
     network_mode: host
 
   nodejs:
     build:
       context: .
       target: sylius_order_now_plugin_nodejs
-    image: nedac/sylius_order_now_plugin_nodejs:latest
-    environment:
-      - GULP_ENV=dev
+      network: host
+    image: ghcr.io/nedac-sorbo/sylius_order_now_plugin_nodejs:latest
     volumes:
-      - .:/srv/sylius
+      - ./src/Resources/public:/srv/sylius/vendor/nedac/sylius-minimum-order-value-plugin/src/Resources/public
     network_mode: host
 
   chrome:
-    image: selenium/standalone-chrome-debug:latest
+    build:
+      context: .
+      target: sylius_order_now_plugin_chrome
+      network: host
+    image: ghcr.io/nedac-sorbo/sylius_order_now_plugin_chrome:latest
     volumes:
       - /dev/shm:/dev/shm
-    ports:
-      - "5900:5900"
     network_mode: host
+
+volumes:
+  public-media:

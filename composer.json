@@ -5,41 +5,26 @@
     "description": "Sylius plugin that adds the possibility to add products to the shopping cart using a button on the product card.",
     "license": "MIT",
     "require": {
-        "php": "^7.4",
-
-        "sylius/sylius": ">=1.6.8 <1.7.0 || >=1.7.5 <1.8.0",
+        "php": "^7.4 || ^8.0",
+        "sylius/sylius": ">=1.9.1 <1.10.0",
         "webmozart/assert": "^1.8"
     },
     "require-dev": {
-        "behat/behat": "^3.4",
-        "behat/mink": "^1.7@dev",
-        "behat/mink-browserkit-driver": "^1.3",
-        "behat/mink-extension": "^2.2",
-        "behat/mink-selenium2-driver": "^1.3",
+        "behat/behat": "^3.8",
+        "dmore/chrome-mink-driver": "^2.7",
+        "friends-of-behat/mink-extension": "^2.4",
         "friends-of-behat/page-object-extension": "^0.3",
-        "friends-of-behat/suite-settings-extension": "^1.0",
-        "friends-of-behat/symfony-extension": "^2.0",
-        "friends-of-behat/variadic-extension": "^1.1",
-        "lakion/mink-debug-extension": "^1.2.3",
-        "phpstan/phpstan-doctrine": "^0.11",
-        "phpstan/phpstan-shim": "^0.11",
-        "phpstan/phpstan-webmozart-assert": "^0.11",
-        "phpunit/phpunit": "^8.0",
-        "sensiolabs/security-checker": "^5.0",
-        "symfony/debug-bundle": "^3.4|^4.3",
-        "symfony/dotenv": "^4.3",
-        "symfony/intl": "^3.4|^4.3",
-        "symfony/web-profiler-bundle": "^3.4|^4.3",
-        "symfony/web-server-bundle": "^3.4|^4.3",
+        "friendsofsymfony/oauth-server-bundle": "^1.6 || >2.0.0-alpha.0 ^2.0@dev",
+        "phpstan/extension-installer": "^1.0",
+        "phpstan/phpstan": "^0.12",
+        "phpstan/phpstan-doctrine": "^0.12",
+        "phpstan/phpstan-strict-rules": "^0.12.0",
+        "phpstan/phpstan-webmozart-assert": "^0.12",
+        "phpunit/phpunit": "^9.5",
         "squizlabs/php_codesniffer": "^3.5",
         "mockery/mockery": "^1.4",
-        "matthiasnoback/symfony-dependency-injection-test": "^4.1",
-        "rregeer/phpunit-coverage-check": "^0.3.1",
-        "symfony/webpack-encore-bundle": "^1.7",
-        "sylius/bootstrap-theme": "dev-master#b576acbef7ed82e684b500486344aa1d8df44e6a || ^0.1.2"
-    },
-    "conflict": {
-        "doctrine/inflector": "^1.4"
+        "matthiasnoback/symfony-dependency-injection-test": "^4.2",
+        "matthiasnoback/symfony-config-test": "^4.2"
     },
     "prefer-stable": true,
     "autoload": {
@@ -48,12 +33,12 @@
             "Tests\\Nedac\\SyliusOrderNowPlugin\\": "tests/"
         }
     },
-    "autoload-dev": {
-        "classmap": ["tests/Application/Kernel.php"]
-    },
     "extra": {
         "branch-alias": {
-            "dev-master": "0.2-dev"
+            "dev-master": "1.0-dev"
+        },
+        "symfony": {
+            "require": "5.3.*"
         }
     }
 }

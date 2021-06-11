@@ -1,0 +1,48 @@
+name: default
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Login to container registry
+        run: echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u USERNAME --password-stdin
+      - name: Pull container images
+        run: docker-compose pull || true
+      - name: Build and start containers
+        run: docker-compose up -d --build
+      - name: Push container images
+        run: |
+          docker-compose push php && \
+          docker-compose push nginx && \
+          docker-compose push nodejs && \
+          docker-compose push chrome
+      - name: Lint javascript
+        run: docker-compose exec -T nodejs yarn eslint vendor/nedac/sylius-minimum-order-value-plugin/src/Resources/public/
+      - name: Install sub dependencies
+        run: docker-compose exec -T php sh -c "(cd vendor/nedac/sylius-minimum-order-value-plugin && composer install)"
+      - name: Install phpcpd
+        run: docker-compose exec -T php phive install --trust-gpg-keys 4AA394086372C20A phpcpd
+      - name: Code duplication
+        run: docker-compose exec -T php ./tools/phpcpd vendor/nedac/sylius-minimum-order-value-plugin/src/ vendor/nedac/sylius-minimum-order-value-plugin/tests/
+      - name: Code style
+        run: docker-compose exec -T php sh -c "(cd vendor/nedac/sylius-minimum-order-value-plugin && vendor/bin/phpcs)"
+      - name: Static analysis
+        run: docker-compose exec -T php sh -c "(cd vendor/nedac/sylius-minimum-order-value-plugin && vendor/bin/phpstan analyse src/ tests/ --level max)"
+      - name: Unit tests
+        run: docker-compose exec -T php sh -c "(cd vendor/nedac/sylius-minimum-order-value-plugin && vendor/bin/phpunit --testdox)"
+      - name: Install twigcs
+        run: docker-compose exec -T php composer global require friendsoftwig/twigcs
+      - name: Template style
+        run: docker-compose exec -T php twigcs vendor/nedac/sylius-minimum-order-value-plugin/src/Resources/views
+      - name: Create database schema
+        run: docker-compose exec -T php bin/console doctrine:schema:create
+      - name: End to end tests
+        run: docker-compose exec -T php vendor/bin/behat
