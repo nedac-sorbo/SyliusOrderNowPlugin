@@ -11,7 +11,7 @@ services:
       - APP_ENV=test
       - DATABASE_URL=mysql://sylius:order_now@127.0.0.1:3306/sylius_order_now
     volumes:
-      - .:/srv/sylius/vendor/nedac/sylius-minimum-order-value-plugin
+      - .:/srv/sylius/vendor/nedac/sylius-order-now-plugin
       - ./etc/build:/srv/sylius/etc/build
       - public-media:/srv/sylius/public/media:rw
     network_mode: host
@@ -42,7 +42,7 @@ services:
       network: host
     image: ghcr.io/nedac-sorbo/sylius_order_now_plugin_nodejs:latest
     volumes:
-      - ./src/Resources/public:/srv/sylius/vendor/nedac/sylius-minimum-order-value-plugin/src/Resources/public
+      - ./src/Resources/public:/srv/sylius/vendor/nedac/sylius-order-now-plugin/src/Resources/public
     network_mode: host
 
   chrome:

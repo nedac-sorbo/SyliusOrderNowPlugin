@@ -101,10 +101,10 @@ WORKDIR /srv/sylius
 
 RUN set -eux; \
     pip install yq; \
-    yq -y -i '.imports[.imports|length] |= . + {"resource": "../vendor/nedac/sylius-minimum-order-value-plugin/src/Resources/config/services_test.xml"}' config/services_test.yaml; \
-    yq -y -i '.imports[.imports|length] |= . + "vendor/nedac/sylius-minimum-order-value-plugin/tests/Behat/Resources/suites.yml"' behat.yml.dist; \
+    yq -y -i '.imports[.imports|length] |= . + {"resource": "../vendor/nedac/sylius-order-now-plugin/src/Resources/config/services_test.xml"}' config/services_test.yaml; \
+    yq -y -i '.imports[.imports|length] |= . + "vendor/nedac/sylius-order-now-plugin/tests/Behat/Resources/suites.yml"' behat.yml.dist; \
     yq -y -i '.default.extensions."Behat\\MinkExtension".base_url = "http://localhost/"' behat.yml.dist; \
-    yq -y -i '.default.extensions."FriendsOfBehat\\SuiteSettingsExtension".paths = ["vendor/nedac/sylius-minimum-order-value-plugin/features"]' behat.yml.dist
+    yq -y -i '.default.extensions."FriendsOfBehat\\SuiteSettingsExtension".paths = ["vendor/nedac/sylius-order-now-plugin/features"]' behat.yml.dist
 
 ARG PRIVATE_FLEX="false"
 RUN set -eux; \
@@ -118,8 +118,8 @@ RUN set -eux; \
 ARG PLUGIN_VERSION=dev-master
 RUN set -eux; \
     composer install --prefer-dist --no-autoloader --no-scripts --no-progress; \
-    composer require nedac/sylius-minimum-order-value-plugin:"$PLUGIN_VERSION" --no-progress -vvv; \
-    composer recipes:install nedac/sylius-minimum-order-value-plugin --force -n; \
+    composer require nedac/sylius-order-now-plugin:"$PLUGIN_VERSION" --no-progress -vvv; \
+    composer recipes:install nedac/sylius-order-now-plugin --force -n; \
     composer clear-cache; \
     cat src/Entity/Channel/Channel.php
 
@@ -155,7 +155,7 @@ COPY --from=sylius_order_now_plugin_php /srv/sylius/vendor/sylius/sylius/src/Syl
 COPY --from=sylius_order_now_plugin_php /srv/sylius/vendor/sylius/sylius/src/Sylius/Bundle/ShopBundle/gulpfile.babel.js ./vendor/sylius/sylius/src/Sylius/Bundle/ShopBundle/gulpfile.babel.js
 COPY --from=sylius_order_now_plugin_php /srv/sylius/vendor/sylius/sylius/src/Sylius/Bundle/ShopBundle/Resources/private vendor/sylius/sylius/src/Sylius/Bundle/ShopBundle/Resources/private/
 COPY --from=sylius_order_now_plugin_php /srv/sylius/vendor/sylius/sylius/src/Sylius/Bundle/UiBundle/Resources/private vendor/sylius/sylius/src/Sylius/Bundle/UiBundle/Resources/private/
-COPY --from=sylius_order_now_plugin_php /srv/sylius/vendor/nedac/sylius-minimum-order-value-plugin/src/Resources/public vendor/nedac/sylius-minimum-order-value-plugin/src/Resources/public/
+COPY --from=sylius_order_now_plugin_php /srv/sylius/vendor/nedac/sylius-order-now-plugin/src/Resources/public vendor/nedac/sylius-order-now-plugin/src/Resources/public/
 
 RUN sed -i 's/node: true,/node: true,\n    browser: true/g' .eslintrc.js
 
