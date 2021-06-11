@@ -37,7 +37,7 @@ jobs:
       - name: Install phpcpd
         run: docker-compose exec -T php phive install --trust-gpg-keys 4AA394086372C20A phpcpd
       - name: Code duplication
-        run: docker-compose exec -T php ./tools/phpcpd vendor/nedac/sylius-order-now-plugin/src/ vendor/nedac/sylius-order-now-plugin/tests/
+        run: docker-compose exec -T php ./tools/phpcpd vendor/nedac/sylius-order-now-plugin/src/ --fuzzy
       - name: Code style
         run: docker-compose exec -T php sh -c "(cd vendor/nedac/sylius-order-now-plugin && vendor/bin/phpcs)"
       - name: Static analysis
