@@ -1,0 +1,49 @@
+{% block form_label %}
+{% endblock %}
+
+{% block integer_widget %}
+    <input class="form-control form-control-sm nedac-sylius-order-now-plugin-number-input"
+           type="number"
+           name="{{ full_name }}"
+           value="1"
+           min="1"
+           {{ sylius_test_html_attribute('order-now-number-input') }}/>
+{% endblock %}
+
+{% block choice_widget %}
+    {%- if required and placeholder is none and not placeholder_in_choices and not multiple and (attr.size is not defined or attr.size <= 1) -%}
+        {% set required = false %}
+    {%- endif -%}
+    <select class="form-control form-control-sm nedac-sylius-order-now-plugin-dropdown"
+            name="{{ full_name }}"
+            {% if multiple %} multiple="multiple"{% endif %}
+            {{ sylius_test_html_attribute('order-now-dropdown') }}>
+        {%- if placeholder is not none -%}
+            <option value=""{% if required and value is empty %} selected="selected"{% endif %}>{{ placeholder != '' ? (translation_domain is same as(false) ? placeholder : placeholder|trans({}, translation_domain)) }}</option>
+        {%- endif -%}
+        {%- if preferred_choices|length > 0 -%}
+            {% set options = preferred_choices %}
+            {% set render_preferred_choices = true %}
+            {{- block('choice_widget_options') -}}
+            {%- if choices|length > 0 and separator is not none -%}
+                <option disabled="disabled">{{ separator }}</option>
+            {%- endif -%}
+        {%- endif -%}
+        {%- set options = choices -%}
+        {%- set render_preferred_choices = false -%}
+        {{- block('choice_widget_options') -}}
+    </select>
+{% endblock %}
+
+{% block form_row %}
+    {{- form_widget(form) -}}
+    {{- form_errors(form) -}}
+{% endblock %}
+
+{%- block form_widget_compound -%}
+    {%- if form is rootform -%}
+        {{ form_errors(form) }}
+    {%- endif -%}
+    {{- block('form_rows') -}}
+    {{- form_rest(form) -}}
+{%- endblock form_widget_compound -%}

@@ -1,0 +1,5 @@
+{% for option_form in cardForm.cartItem.variant %}
+    <div class="col">
+        {{ form_widget(option_form, { 'attr': { 'data-option': option_form.vars.name } }) }}
+    </div>
+{% endfor %}
