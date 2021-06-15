@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Tests\Nedac\SyliusOrderNowPlugin\Unit\Controller;
 
 use Doctrine\Persistence\ObjectManager;
-use FOS\RestBundle\View\View;
 use Mockery;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
 use Nedac\SyliusOrderNowPlugin\Controller\ProductReviewController;
@@ -16,7 +15,6 @@ use Sylius\Bundle\ResourceBundle\Controller\NewResourceFactoryInterface;
 use Sylius\Bundle\ResourceBundle\Controller\RedirectHandlerInterface;
 use Sylius\Bundle\ResourceBundle\Controller\RequestConfiguration;
 use Sylius\Bundle\ResourceBundle\Controller\RequestConfigurationFactoryInterface;
-use Sylius\Bundle\ResourceBundle\Controller\ResourceController;
 use Sylius\Bundle\ResourceBundle\Controller\ResourceDeleteHandlerInterface;
 use Sylius\Bundle\ResourceBundle\Controller\ResourceFormFactoryInterface;
 use Sylius\Bundle\ResourceBundle\Controller\ResourcesCollectionProviderInterface;
@@ -30,11 +28,13 @@ use Sylius\Component\Resource\Factory\FactoryInterface;
 use Sylius\Component\Resource\Metadata\MetadataInterface;
 use Sylius\Component\Resource\Repository\RepositoryInterface;
 use Sylius\Component\Review\Model\ReviewInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Twig\Environment;
 
 final class ProductReviewControllerTest extends MockeryTestCase
 {
@@ -941,27 +941,8 @@ final class ProductReviewControllerTest extends MockeryTestCase
         self::assertSame($response, $controller->createAction($request));
     }
 
-    /**
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     */
     public function testCardFormIsAddedToCreateTemplate(): void
     {
-        $view = Mockery::mock('alias:' . View::class);
-        $view
-            ->shouldReceive('create')
-            ->andReturnSelf()
-        ;
-
-        $view
-            ->shouldReceive('setTemplate')
-            ->with('TEMPLATE')
-            ->once()
-            ->andReturnSelf()
-        ;
-
-        $response = Mockery::mock(Response::class);
-
         $configuration = Mockery::mock(RequestConfiguration::class);
         $configuration
             ->shouldReceive('isHtmlRequest')
@@ -1050,25 +1031,36 @@ final class ProductReviewControllerTest extends MockeryTestCase
             ->andReturn('NAME')
         ;
 
-        $view
-            ->shouldReceive('setData')
-            ->with([
-                'configuration' => $configuration,
-                'metadata' => $metadata,
-                'resource' => $review,
-                'NAME' => $review,
-                'form' => $formView,
-                'cardForm' => $cardFormView
-            ])
+        $twig = Mockery::mock(Environment::class);
+        $twig
+            ->shouldReceive('render')
+            ->withArgs(function (string $name, array $options): bool {
+                return isset($options['cardForm']);
+            })
             ->once()
-            ->andReturnSelf()
+            ->andReturn('')
         ;
 
-        $viewHandler = Mockery::mock(ViewHandlerInterface::class);
-        $viewHandler
-            ->shouldReceive('handle')
+        $container = Mockery::mock(ContainerInterface::class);
+        $container
+            ->shouldReceive('has')
+            ->with('templating')
             ->once()
-            ->andReturn($response)
+            ->andReturnFalse()
+        ;
+
+        $container
+            ->shouldReceive('has')
+            ->with('twig')
+            ->once()
+            ->andReturn(Mockery::mock(Environment::class))
+        ;
+
+        $container
+            ->shouldReceive('get')
+            ->with('twig')
+            ->once()
+            ->andReturn($twig)
         ;
 
         $controller = Mockery::mock(ProductReviewController::class)->makePartial();
@@ -1087,7 +1079,7 @@ final class ProductReviewControllerTest extends MockeryTestCase
         $controller->__construct(
             $metadata,
             $configurationFactory,
-            $viewHandler,
+            null,
             Mockery::mock(RepositoryInterface::class),
             Mockery::mock(FactoryInterface::class),
             $factory,
@@ -1104,6 +1096,8 @@ final class ProductReviewControllerTest extends MockeryTestCase
             Mockery::mock(ResourceDeleteHandlerInterface::class)
         );
 
-        self::assertSame($response, $controller->createAction($request));
+        $controller->setContainer($container);
+
+        $controller->createAction($request);
     }
 }

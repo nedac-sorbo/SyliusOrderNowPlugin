@@ -31,10 +31,12 @@ use Sylius\Component\Product\Model\ProductAssociationInterface;
 use Sylius\Component\Resource\Factory\FactoryInterface;
 use Sylius\Component\Resource\Metadata\MetadataInterface;
 use Sylius\Component\Resource\Repository\RepositoryInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Twig\Environment;
 
 /**
  * @runTestsInSeparateProcesses
@@ -69,21 +71,10 @@ final class ProductAssociationControllerTest extends MockeryTestCase
 
     public function testAddsFormsToView(): void
     {
-        $view = Mockery::mock('alias:' . View::class);
-
-        $response = Mockery::mock(Response::class);
-
-        $viewHandler = Mockery::mock(ViewHandlerInterface::class);
-        $viewHandler
-            ->shouldReceive('handle')
-            ->once()
-            ->andReturn($response)
-        ;
-
         $metadata = Mockery::mock(MetadataInterface::class);
         $metadata
             ->shouldReceive('getName')
-            ->twice()
+            ->once()
             ->andReturn('NAME')
         ;
 
@@ -154,37 +145,36 @@ final class ProductAssociationControllerTest extends MockeryTestCase
             ->andReturn($formView)
         ;
 
-        $view
-            ->shouldReceive('create')
+        $twig = Mockery::mock(Environment::class);
+        $twig
+            ->shouldReceive('render')
+            ->withArgs(function (string $name, array $options): bool {
+                return isset($options['forms']);
+            })
             ->once()
-            ->andReturnSelf()
+            ->andReturn('')
         ;
 
-        $view
-            ->shouldReceive('setTemplate')
-            ->with('TEMPLATE')
+        $container = Mockery::mock(ContainerInterface::class);
+        $container
+            ->shouldReceive('has')
+            ->with('templating')
             ->once()
-            ->andReturnSelf()
+            ->andReturnFalse()
         ;
 
-        $view
-            ->shouldReceive('setTemplateVar')
-            ->with('NAME')
+        $container
+            ->shouldReceive('has')
+            ->with('twig')
             ->once()
-            ->andReturnSelf()
+            ->andReturn(Mockery::mock(Environment::class))
         ;
 
-        $view
-            ->shouldReceive('setData')
-            ->with([
-                'configuration' => $configuration,
-                'metadata' => $metadata,
-                'resource' => $resource,
-                'NAME' => $resource,
-                'forms' => [$formView]
-            ])
+        $container
+            ->shouldReceive('get')
+            ->with('twig')
             ->once()
-            ->andReturnSelf()
+            ->andReturn($twig)
         ;
 
         $controller = Mockery::mock(ProductAssociationController::class)->makePartial();
@@ -211,7 +201,7 @@ final class ProductAssociationControllerTest extends MockeryTestCase
         $controller->__construct(
             $metadata,
             $requestConfigurationFactory,
-            $viewHandler,
+            null,
             Mockery::mock(RepositoryInterface::class),
             Mockery::mock(FactoryInterface::class),
             Mockery::mock(NewResourceFactoryInterface::class),
@@ -228,6 +218,8 @@ final class ProductAssociationControllerTest extends MockeryTestCase
             Mockery::mock(ResourceDeleteHandlerInterface::class)
         );
 
-        self::assertSame($response, $controller->showAction(Mockery::mock(Request::class)));
+        $controller->setContainer($container);
+
+        $controller->showAction(Mockery::mock(Request::class));
     }
 }

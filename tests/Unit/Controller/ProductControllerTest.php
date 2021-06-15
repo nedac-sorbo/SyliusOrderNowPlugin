@@ -31,10 +31,12 @@ use Sylius\Component\Core\Model\ProductInterface;
 use Sylius\Component\Resource\Factory\FactoryInterface;
 use Sylius\Component\Resource\Metadata\MetadataInterface;
 use Sylius\Component\Resource\Repository\RepositoryInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Twig\Environment;
 
 /**
  * @runTestsInSeparateProcesses
@@ -69,26 +71,6 @@ final class ProductControllerTest extends MockeryTestCase
 
     public function testAddsFormsToIndexTemplate(): void
     {
-        $view = Mockery::mock('alias:' . View::class);
-        $view
-            ->shouldReceive('create')
-            ->andReturnSelf()
-        ;
-
-        $view
-            ->shouldReceive('setTemplate')
-            ->with('TEMPLATE')
-            ->once()
-            ->andReturnSelf()
-        ;
-
-        $view
-            ->shouldReceive('setTemplateVar')
-            ->once()
-            ->with('PLURAL')
-            ->andReturnSelf()
-        ;
-
         $configuration = Mockery::mock(RequestConfiguration::class);
         $configuration
             ->shouldReceive('isHtmlRequest')
@@ -170,30 +152,29 @@ final class ProductControllerTest extends MockeryTestCase
         $metadata = Mockery::mock(MetadataInterface::class);
         $metadata
             ->shouldReceive('getPluralName')
-            ->twice()
+            ->once()
             ->andReturn('PLURAL')
         ;
 
-        $view
-            ->shouldReceive('setData')
-            ->with([
-                'configuration' => $configuration,
-                'metadata' => $metadata,
-                'resources' => $resources,
-                'PLURAL' => $resources,
-                'forms' => [$formView]
-            ])
+        $container = Mockery::mock(ContainerInterface::class);
+        $container
+            ->shouldReceive('has')
+            ->with('templating')
             ->once()
-            ->andReturnSelf()
+            ->andReturnFalse()
         ;
 
-        $response = Mockery::mock(Response::class);
-
-        $viewHandler = Mockery::mock(ViewHandlerInterface::class);
-        $viewHandler
-            ->shouldReceive('handle')
+        $container
+            ->shouldReceive('has')
+            ->with('twig')
             ->once()
-            ->andReturn($response)
+            ->andReturn(Mockery::mock(Environment::class))
+        ;
+
+        $container
+            ->shouldReceive('get->render')
+            ->once()
+            ->andReturn('')
         ;
 
         $controller = Mockery::mock(ProductController::class)->makePartial();
@@ -214,7 +195,7 @@ final class ProductControllerTest extends MockeryTestCase
         $controller->__construct(
             $metadata,
             $requestConfigurationFactory,
-            $viewHandler,
+            null,
             Mockery::mock(RepositoryInterface::class),
             Mockery::mock(FactoryInterface::class),
             Mockery::mock(NewResourceFactoryInterface::class),
@@ -231,31 +212,13 @@ final class ProductControllerTest extends MockeryTestCase
             Mockery::mock(ResourceDeleteHandlerInterface::class)
         );
 
-        self::assertSame($response, $controller->indexAction(Mockery::mock(Request::class)));
+        $controller->setContainer($container);
+
+        $controller->indexAction(Mockery::mock(Request::class));
     }
 
     public function testAddsFormToShowTemplate(): void
     {
-        $view = Mockery::mock('alias:' . View::class);
-        $view
-            ->shouldReceive('create')
-            ->andReturnSelf()
-        ;
-
-        $view
-            ->shouldReceive('setTemplate')
-            ->with('TEMPLATE')
-            ->once()
-            ->andReturnSelf()
-        ;
-
-        $view
-            ->shouldReceive('setTemplateVar')
-            ->once()
-            ->with('NAME')
-            ->andReturnSelf()
-        ;
-
         $configuration = Mockery::mock(RequestConfiguration::class);
         $configuration
             ->shouldReceive('isHtmlRequest')
@@ -279,7 +242,7 @@ final class ProductControllerTest extends MockeryTestCase
         $metadata = Mockery::mock(MetadataInterface::class);
         $metadata
             ->shouldReceive('getName')
-            ->twice()
+            ->once()
             ->andReturn('NAME')
         ;
 
@@ -300,26 +263,36 @@ final class ProductControllerTest extends MockeryTestCase
             ->andReturn($formView)
         ;
 
-        $view
-            ->shouldReceive('setData')
-            ->with([
-                'configuration' => $configuration,
-                'metadata' => $metadata,
-                'resource' => $product,
-                'NAME' => $product,
-                'cardForm' => $formView
-            ])
+        $twig = Mockery::mock(Environment::class);
+        $twig
+            ->shouldReceive('render')
+            ->withArgs(function (string $name, array $options): bool {
+                return isset($options['cardForm']);
+            })
             ->once()
-            ->andReturnSelf()
+            ->andReturn('')
         ;
 
-        $response = Mockery::mock(Response::class);
-
-        $viewHandler = Mockery::mock(ViewHandlerInterface::class);
-        $viewHandler
-            ->shouldReceive('handle')
+        $container = Mockery::mock(ContainerInterface::class);
+        $container
+            ->shouldReceive('has')
+            ->with('templating')
             ->once()
-            ->andReturn($response)
+            ->andReturnFalse()
+        ;
+
+        $container
+            ->shouldReceive('has')
+            ->with('twig')
+            ->once()
+            ->andReturn(Mockery::mock(Environment::class))
+        ;
+
+        $container
+            ->shouldReceive('get')
+            ->with('twig')
+            ->once()
+            ->andReturn($twig)
         ;
 
         $controller = Mockery::mock(ProductController::class)->makePartial();
@@ -346,7 +319,7 @@ final class ProductControllerTest extends MockeryTestCase
         $controller->__construct(
             $metadata,
             $requestConfigurationFactory,
-            $viewHandler,
+            null,
             Mockery::mock(RepositoryInterface::class),
             Mockery::mock(FactoryInterface::class),
             Mockery::mock(NewResourceFactoryInterface::class),
@@ -363,6 +336,8 @@ final class ProductControllerTest extends MockeryTestCase
             Mockery::mock(ResourceDeleteHandlerInterface::class)
         );
 
-        self::assertSame($response, $controller->showAction(Mockery::mock(Request::class)));
+        $controller->setContainer($container);
+
+        $controller->showAction(Mockery::mock(Request::class));
     }
 }
