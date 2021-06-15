@@ -13,7 +13,8 @@ final class ClearContext implements Context
 {
     private array $repositories = [];
 
-    public function __construct(RepositoryInterface ...$repositories) {
+    public function __construct(RepositoryInterface ...$repositories)
+    {
         $this->repositories = $repositories;
     }
 

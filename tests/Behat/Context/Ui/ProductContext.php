@@ -37,7 +37,7 @@ final class ProductContext implements Context
     /**
      * @When I click the order now button on the product show page
      */
-    public function iClickTheOrderNowButtonOnTheProductShowPage()
+    public function iClickTheOrderNowButtonOnTheProductShowPage(): void
     {
         $this->showPage->clickTheOrderNowButton();
     }
@@ -85,5 +85,4 @@ final class ProductContext implements Context
             NotificationType::failure()
         );
     }
-
 }
