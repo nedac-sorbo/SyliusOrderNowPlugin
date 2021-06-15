@@ -47,7 +47,7 @@ jobs:
       - name: Install twigcs
         run: docker-compose exec -T php composer global require friendsoftwig/twigcs
       - name: Template style
-        run: docker-compose exec -T php twigcs vendor/nedac/sylius-order-now-plugin/src/Resources/views
+        run: docker-compose exec -T php twigcs vendor/nedac/sylius-order-now-plugin/src/Resources/views --severity error
       - name: Create database schema
         run: docker-compose exec -T php bin/console doctrine:schema:create
       - name: End to end tests

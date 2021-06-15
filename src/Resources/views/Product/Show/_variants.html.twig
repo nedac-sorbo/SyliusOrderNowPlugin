@@ -15,9 +15,9 @@
                 {{ variant.name }}
                 {% if product.hasOptions() %}
                     <div class="ui horizontal divided list">
-                        {% for optionValue in variant.optionValues %}
+                        {% for option_value in variant.optionValues %}
                             <div class="item">
-                                {{ optionValue.value }}
+                                {{ option_value.value }}
                             </div>
                         {% endfor %}
                     </div>

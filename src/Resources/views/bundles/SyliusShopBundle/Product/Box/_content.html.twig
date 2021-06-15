@@ -2,7 +2,7 @@
 
 {% form_theme cardForm 'form/product_card_form_theme.html.twig' %}
 
-{% set formId = 'nedac-sylius-order-now-plugin-form-' ~ product.id %}
+{% set form_id = 'nedac-sylius-order-now-plugin-form-' ~ product.id %}
 
 <div class="ui fluid card" {{ sylius_test_html_attribute('product') }}>
     <a href="{{ path('sylius_shop_product_show', {'slug': product.slug, '_locale': product.translation.locale}) }}" class="blurring dimmable image">
@@ -22,7 +22,7 @@
         {% endif %}
     </div>
     <div class="ui bottom attached button nedac-order-now-button-container" {{ sylius_test_html_attribute('order-now-button-container') }}>
-        {{ form_start(cardForm, {'action': path('nedac_shop_cart_add_item', {'productId': product.id}), 'attr': {'id': formId, 'novalidate': 'novalidate'}}) }}
+        {{ form_start(cardForm, {'action': path('nedac_shop_cart_add_item', {'productId': product.id}), 'attr': {'id': form_id, 'novalidate': 'novalidate'}}) }}
         {{ form_row(cardForm.cartItem.quantity) }}
         {% if not product.simple %}
             {% if product.variantSelectionMethodChoice %}
