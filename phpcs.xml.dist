@@ -11,13 +11,6 @@
     <rule ref="PSR12"/>
 
     <file>src/</file>
-    <file>tests/Application</file>
-    <file>tests/Unit</file>
-
-    <!-- TODO: Re-enable once we have some behat contexts -->
-    <!--<file>tests/Behat</file>-->
-
-    <exclude-pattern>tests/Application/node_modules</exclude-pattern>
-    <exclude-pattern>tests/Application/var</exclude-pattern>
+    <file>tests/</file>
 
 </ruleset>
