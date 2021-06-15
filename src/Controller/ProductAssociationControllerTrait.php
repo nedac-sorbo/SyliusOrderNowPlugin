@@ -4,12 +4,10 @@ declare(strict_types=1);
 
 namespace Nedac\SyliusOrderNowPlugin\Controller;
 
-use FOS\RestBundle\View\View;
 use Nedac\SyliusOrderNowPlugin\Form\Type\AddToCartType;
 use Sylius\Bundle\ResourceBundle\Controller\EventDispatcherInterface;
 use Sylius\Bundle\ResourceBundle\Controller\RequestConfiguration;
 use Sylius\Bundle\ResourceBundle\Controller\RequestConfigurationFactoryInterface;
-use Sylius\Bundle\ResourceBundle\Controller\ViewHandlerInterface;
 use Sylius\Component\Product\Model\ProductAssociationInterface;
 use Sylius\Component\Resource\Metadata\MetadataInterface;
 use Sylius\Component\Resource\Model\ResourceInterface;
@@ -21,7 +19,6 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * @property MetadataInterface $metadata
  * @property RequestConfigurationFactoryInterface $requestConfigurationFactory
- * @property ViewHandlerInterface $viewHandler
  * @property EventDispatcherInterface $eventDispatcher
  * @method void isGrantedOr403(RequestConfiguration $configuration, string $permission)
  * @method FormInterface createForm(string $type, $data = null, array $options = [])
@@ -40,8 +37,6 @@ trait ProductAssociationControllerTrait
 
         $this->eventDispatcher->dispatch(ResourceActions::SHOW, $configuration, $resource);
 
-        $view = View::create($resource);
-
         if ($configuration->isHtmlRequest()) {
             $forms = [];
             $products = $resource->getAssociatedProducts();
@@ -52,19 +47,15 @@ trait ProductAssociationControllerTrait
                 ;
             }
 
-            $view
-                ->setTemplate($configuration->getTemplate(ResourceActions::SHOW . '.html'))
-                ->setTemplateVar($this->metadata->getName())
-                ->setData([
-                    'configuration' => $configuration,
-                    'metadata' => $this->metadata,
-                    'resource' => $resource,
-                    $this->metadata->getName() => $resource,
-                    'forms' => $forms
-                ])
-            ;
+            return $this->render($configuration->getTemplate(ResourceActions::SHOW . '.html'), [
+                'configuration' => $configuration,
+                'metadata' => $this->metadata,
+                'resource' => $resource,
+                $this->metadata->getName() => $resource,
+                'forms' => $forms
+            ]);
         }
 
-        return $this->viewHandler->handle($configuration, $view);
+        return $this->createRestView($configuration, $resource);
     }
 }

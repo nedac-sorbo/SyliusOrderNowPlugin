@@ -4,14 +4,12 @@ declare(strict_types=1);
 
 namespace Nedac\SyliusOrderNowPlugin\Controller;
 
-use FOS\RestBundle\View\View;
 use Nedac\SyliusOrderNowPlugin\Form\Type\AddToCartType;
 use Pagerfanta\Pagerfanta;
 use Sylius\Bundle\ResourceBundle\Controller\EventDispatcherInterface;
 use Sylius\Bundle\ResourceBundle\Controller\RequestConfiguration;
 use Sylius\Bundle\ResourceBundle\Controller\RequestConfigurationFactoryInterface;
 use Sylius\Bundle\ResourceBundle\Controller\ResourcesCollectionProviderInterface;
-use Sylius\Bundle\ResourceBundle\Controller\ViewHandlerInterface;
 use Sylius\Bundle\ResourceBundle\Grid\View\ResourceGridView;
 use Sylius\Component\Resource\Metadata\MetadataInterface;
 use Sylius\Component\Resource\Model\ResourceInterface;
@@ -27,7 +25,6 @@ use Symfony\Component\HttpFoundation\Response;
  * @property RepositoryInterface $repository
  * @property ResourcesCollectionProviderInterface $resourcesCollectionProvider
  * @property EventDispatcherInterface $eventDispatcher
- * @property ViewHandlerInterface $viewHandler
  * @method void isGrantedOr403(RequestConfiguration $configuration, string $permission)
  * @method FormInterface createForm(string $type, $data = null, array $options = [])
  * @method ResourceInterface findOr404(RequestConfiguration $configuration)
@@ -42,8 +39,6 @@ trait ProductControllerTrait
 
         $resources = $this->resourcesCollectionProvider->get($configuration, $this->repository);
         $this->eventDispatcher->dispatchMultiple(ResourceActions::INDEX, $configuration, $resources);
-
-        $view = View::create($resources);
 
         if ($configuration->isHtmlRequest()) {
             $forms = [];
@@ -63,20 +58,16 @@ trait ProductControllerTrait
                 ;
             }
 
-            $view
-                ->setTemplate($configuration->getTemplate(ResourceActions::INDEX . '.html'))
-                ->setTemplateVar($this->metadata->getPluralName())
-                ->setData([
-                    'configuration' => $configuration,
-                    'metadata' => $this->metadata,
-                    'resources' => $resources,
-                    $this->metadata->getPluralName() => $resources,
-                    'forms' => $forms
-                ])
-            ;
+            return $this->render($configuration->getTemplate(ResourceActions::INDEX . '.html'), [
+                'configuration' => $configuration,
+                'metadata' => $this->metadata,
+                'resources' => $resources,
+                $this->metadata->getPluralName() => $resources,
+                'forms' => $forms
+            ]);
         }
 
-        return $this->viewHandler->handle($configuration, $view);
+        return $this->createRestView($configuration, $resources);
     }
 
     public function showAction(Request $request): Response
@@ -88,27 +79,21 @@ trait ProductControllerTrait
 
         $this->eventDispatcher->dispatch(ResourceActions::SHOW, $configuration, $resource);
 
-        $view = View::create($resource);
-
         if ($configuration->isHtmlRequest()) {
             $cardForm = $this
                 ->createForm(AddToCartType::class, null, ['product' => $resource])
                 ->createView()
             ;
 
-            $view
-                ->setTemplate($configuration->getTemplate(ResourceActions::SHOW . '.html'))
-                ->setTemplateVar($this->metadata->getName())
-                ->setData([
-                    'configuration' => $configuration,
-                    'metadata' => $this->metadata,
-                    'resource' => $resource,
-                    $this->metadata->getName() => $resource,
-                    'cardForm' => $cardForm
-                ])
-            ;
+            return $this->render($configuration->getTemplate(ResourceActions::SHOW . '.html'), [
+                'configuration' => $configuration,
+                'metadata' => $this->metadata,
+                'resource' => $resource,
+                $this->metadata->getName() => $resource,
+                'cardForm' => $cardForm
+            ]);
         }
 
-        return $this->viewHandler->handle($configuration, $view);
+        return $this->createRestView($configuration, $resource);
     }
 }

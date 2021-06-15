@@ -146,7 +146,10 @@ final class ProductContext implements Context
                 $product->setCurrentLocale($locale->getCode());
 
                 $product->setName($productName);
-                $product->setSlug($slug ?: $this->slugGenerator->generate($productName));
+                if (null === $slug) {
+                    $slug = $this->slugGenerator->generate($productName);
+                }
+                $product->setSlug($slug);
             }
         }
 

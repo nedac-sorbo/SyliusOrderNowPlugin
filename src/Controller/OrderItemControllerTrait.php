@@ -18,6 +18,7 @@ use Sylius\Component\Order\Model\OrderInterface;
 use Sylius\Component\Order\Modifier\OrderItemQuantityModifierInterface;
 use Sylius\Component\Order\Modifier\OrderModifierInterface;
 use Sylius\Component\Resource\Metadata\MetadataInterface;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -96,7 +97,9 @@ trait OrderItemControllerTrait
         } else {
             $errors = $form->getErrors();
             foreach ($errors as $error) {
-                $this->addFlash('error', $error->getMessage());
+                if ($error instanceof FormError) {
+                    $this->addFlash('error', $error->getMessage());
+                }
             }
         }
 

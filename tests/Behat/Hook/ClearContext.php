@@ -11,6 +11,7 @@ use Sylius\Component\Resource\Repository\RepositoryInterface;
 
 final class ClearContext implements Context
 {
+    /** @var RepositoryInterface[] */
     private array $repositories = [];
 
     public function __construct(RepositoryInterface ...$repositories)

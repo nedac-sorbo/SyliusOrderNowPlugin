@@ -29,7 +29,7 @@ final class NotificationAccessor implements NotificationAccessorInterface
             'descendant::*[@data-test-flash-message]'
         );
 
-        if (empty($messageElements)) {
+        if (0 === count($messageElements)) {
             throw new ElementNotFoundException(
                 $this->session->getDriver(),
                 'message element',

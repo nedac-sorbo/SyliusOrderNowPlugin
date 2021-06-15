@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Nedac\SyliusOrderNowPlugin\Unit\Controller;
 
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Persistence\ObjectManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Mockery;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
@@ -42,7 +42,9 @@ final class OrderItemControllerTest extends MockeryTestCase
 {
     public function testCanInstantiate(): void
     {
-        $controller = new OrderItemController(
+        self::expectNotToPerformAssertions();
+
+        new OrderItemController(
             Mockery::mock(MetadataInterface::class),
             Mockery::mock(RequestConfigurationFactoryInterface::class),
             Mockery::mock(ViewHandlerInterface::class),
@@ -61,8 +63,6 @@ final class OrderItemControllerTest extends MockeryTestCase
             Mockery::mock(ResourceUpdateHandlerInterface::class),
             Mockery::mock(ResourceDeleteHandlerInterface::class)
         );
-
-        $this->assertInstanceOf(ResourceController::class, $controller);
     }
 
     public function testThrowsWhenFormTypeNull(): void
@@ -283,7 +283,7 @@ final class OrderItemControllerTest extends MockeryTestCase
             ->andReturn(true)
         ;
 
-        $this->assertSame($newResponse, $controller->addAction($request));
+        self::assertSame($newResponse, $controller->addAction($request));
     }
 
     public function testRedirectsToRefererWhenEventIsStopped(): void
@@ -416,7 +416,7 @@ final class OrderItemControllerTest extends MockeryTestCase
             ->andReturn(true)
         ;
 
-        $this->assertSame($newResponse, $controller->addAction($request));
+        self::assertSame($newResponse, $controller->addAction($request));
     }
 
     public function testReturnsEventResponse(): void
@@ -581,7 +581,7 @@ final class OrderItemControllerTest extends MockeryTestCase
             ->andReturn(true)
         ;
 
-        $this->assertSame($newResponse, $controller->addAction($request));
+        self::assertSame($newResponse, $controller->addAction($request));
     }
 
     public function testRedirectsToRefererWithSuccessFlash(): void
@@ -770,6 +770,6 @@ final class OrderItemControllerTest extends MockeryTestCase
             ->andReturn(true)
         ;
 
-        $this->assertSame($newResponse, $controller->addAction($request));
+        self::assertSame($newResponse, $controller->addAction($request));
     }
 }

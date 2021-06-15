@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Nedac\SyliusOrderNowPlugin\Controller;
 
-use FOS\RestBundle\View\View;
 use Nedac\SyliusOrderNowPlugin\Form\Type\AddToCartType;
 use Sylius\Bundle\ResourceBundle\Controller\EventDispatcherInterface;
 use Sylius\Bundle\ResourceBundle\Controller\FlashHelperInterface;
@@ -14,7 +13,6 @@ use Sylius\Bundle\ResourceBundle\Controller\RequestConfiguration;
 use Sylius\Bundle\ResourceBundle\Controller\RequestConfigurationFactoryInterface;
 use Sylius\Bundle\ResourceBundle\Controller\ResourceFormFactoryInterface;
 use Sylius\Bundle\ResourceBundle\Controller\StateMachineInterface;
-use Sylius\Bundle\ResourceBundle\Controller\ViewHandlerInterface;
 use Sylius\Component\Core\Model\ProductInterface;
 use Sylius\Component\Resource\Factory\FactoryInterface;
 use Sylius\Component\Resource\Metadata\MetadataInterface;
@@ -37,17 +35,12 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
  * @property RedirectHandlerInterface $redirectHandler
  * @property StateMachineInterface $stateMachine
  * @property RepositoryInterface $repository
- * @property ViewHandlerInterface $viewHandler
  * @method void isGrantedOr403(RequestConfiguration $configuration, string $permission)
  * @method FormInterface createForm(string $type, $data = null, array $options = [])
+ * @method Response render(string $view, array $parameters = [], Response $response = null)
  */
 trait ProductReviewControllerTrait
 {
-    /**
-     * @param Request $request
-     * @return Response
-     * @throws \SM\SMException
-     */
     public function createAction(Request $request): Response
     {
         $configuration = $this->requestConfigurationFactory->create($this->metadata, $request);
@@ -91,7 +84,7 @@ trait ProductReviewControllerTrait
             );
 
             if (!$configuration->isHtmlRequest()) {
-                return $this->viewHandler->handle($configuration, View::create($newResource, Response::HTTP_CREATED));
+                return $this->createRestView($configuration, $newResource, Response::HTTP_CREATED);
             }
 
             $postEventResponse = $postEvent->getResponse();
@@ -103,7 +96,7 @@ trait ProductReviewControllerTrait
         }
 
         if (!$configuration->isHtmlRequest()) {
-            return $this->viewHandler->handle($configuration, View::create($form, Response::HTTP_BAD_REQUEST));
+            return $this->createRestView($configuration, $form, Response::HTTP_BAD_REQUEST);
         }
 
         $initializeEvent = $this->eventDispatcher->dispatchInitializeEvent(
@@ -123,18 +116,13 @@ trait ProductReviewControllerTrait
             ->createView()
         ;
 
-        $view = View::create()
-            ->setData([
-                'configuration' => $configuration,
-                'metadata' => $this->metadata,
-                'resource' => $newResource,
-                $this->metadata->getName() => $newResource,
-                'form' => $form->createView(),
-                'cardForm' => $cardForm
-            ])
-            ->setTemplate($configuration->getTemplate(ResourceActions::CREATE . '.html'))
-        ;
-
-        return $this->viewHandler->handle($configuration, $view);
+        return $this->render($configuration->getTemplate(ResourceActions::CREATE . '.html'), [
+            'configuration' => $configuration,
+            'metadata' => $this->metadata,
+            'resource' => $newResource,
+            $this->metadata->getName() => $newResource,
+            'form' => $form->createView(),
+            'cardForm' => $cardForm
+        ]);
     }
 }

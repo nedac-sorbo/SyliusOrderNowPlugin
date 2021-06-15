@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Nedac\SyliusOrderNowPlugin\Behat\Context\Setup;
 
 use Behat\Behat\Context\Context;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Persistence\ObjectManager;
 use Sylius\Behat\Service\SharedStorageInterface;
 use Sylius\Component\Core\Formatter\StringInflector;
 use Sylius\Component\Product\Model\ProductOptionInterface;
@@ -43,7 +43,10 @@ final class ProductOptionContext implements Context
         /** @var ProductOptionInterface $productOption */
         $productOption = $this->productOptionFactory->createNew();
         $productOption->setName($name);
-        $productOption->setCode($code ?: StringInflector::nameToCode($name));
+        if (null === $code) {
+            $code = StringInflector::nameToCode($name);
+        }
+        $productOption->setCode($code);
         $productOption->setPosition((null === $position) ? null : (int) $position);
 
         $this->sharedStorage->set('product_option', $productOption);

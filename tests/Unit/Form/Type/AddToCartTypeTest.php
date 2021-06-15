@@ -9,7 +9,6 @@ use Mockery\Adapter\Phpunit\MockeryTestCase;
 use Nedac\SyliusOrderNowPlugin\Form\Type\AddToCartType;
 use Sylius\Bundle\OrderBundle\Controller\AddToCartCommand;
 use Sylius\Bundle\OrderBundle\Form\Type\CartItemType;
-use Sylius\Bundle\ResourceBundle\Form\Type\AbstractResourceType;
 use Sylius\Component\Core\Model\ProductInterface;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -18,9 +17,9 @@ final class AddToCartTypeTest extends MockeryTestCase
 {
     public function testCanInstantiate(): AddToCartType
     {
-        $type = new AddToCartType(AddToCartCommand::class);
+        self::expectNotToPerformAssertions();
 
-        $this->assertInstanceOf(AbstractResourceType::class, $type);
+        $type = new AddToCartType(AddToCartCommand::class);
 
         return $type;
     }
@@ -31,7 +30,7 @@ final class AddToCartTypeTest extends MockeryTestCase
      */
     public function testReturnsCorrectBlockPrefix(AddToCartType $type): void
     {
-        $this->assertEquals('nedac_sylius_order_now_plugin_add_to_cart', $type->getBlockPrefix());
+        self::assertEquals('nedac_sylius_order_now_plugin_add_to_cart', $type->getBlockPrefix());
     }
 
     /**

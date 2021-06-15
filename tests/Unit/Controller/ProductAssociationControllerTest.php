@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Nedac\SyliusOrderNowPlugin\Unit\Controller;
 
 use Doctrine\Common\Collections\Collection;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Persistence\ObjectManager;
 use FOS\RestBundle\View\View;
 use Mockery;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
@@ -44,7 +44,9 @@ final class ProductAssociationControllerTest extends MockeryTestCase
 {
     public function testCanInstantiate(): void
     {
-        $controller = new ProductAssociationController(
+        self::expectNotToPerformAssertions();
+
+        new ProductAssociationController(
             Mockery::mock(MetadataInterface::class),
             Mockery::mock(RequestConfigurationFactoryInterface::class),
             Mockery::mock(ViewHandlerInterface::class),
@@ -63,8 +65,6 @@ final class ProductAssociationControllerTest extends MockeryTestCase
             Mockery::mock(ResourceUpdateHandlerInterface::class),
             Mockery::mock(ResourceDeleteHandlerInterface::class)
         );
-
-        $this->assertInstanceOf(ResourceController::class, $controller);
     }
 
     public function testAddsFormsToView(): void
@@ -228,6 +228,6 @@ final class ProductAssociationControllerTest extends MockeryTestCase
             Mockery::mock(ResourceDeleteHandlerInterface::class)
         );
 
-        $this->assertSame($response, $controller->showAction(Mockery::mock(Request::class)));
+        self::assertSame($response, $controller->showAction(Mockery::mock(Request::class)));
     }
 }

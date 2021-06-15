@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Nedac\SyliusOrderNowPlugin\Unit\Controller;
 
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Persistence\ObjectManager;
 use FOS\RestBundle\View\View;
 use Mockery;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
@@ -40,7 +40,9 @@ final class ProductReviewControllerTest extends MockeryTestCase
 {
     public function testCanInstantiate(): void
     {
-        $controller = new ProductReviewController(
+        self::expectNotToPerformAssertions();
+
+        new ProductReviewController(
             Mockery::mock(MetadataInterface::class),
             Mockery::mock(RequestConfigurationFactoryInterface::class),
             Mockery::mock(ViewHandlerInterface::class),
@@ -59,8 +61,6 @@ final class ProductReviewControllerTest extends MockeryTestCase
             Mockery::mock(ResourceUpdateHandlerInterface::class),
             Mockery::mock(ResourceDeleteHandlerInterface::class)
         );
-
-        $this->assertInstanceOf(ResourceController::class, $controller);
     }
 
     public function testThrowsWhenTheEventIsStoppedAndTheRequestIsNoHtmlRequest(): void
@@ -279,7 +279,7 @@ final class ProductReviewControllerTest extends MockeryTestCase
             Mockery::mock(ResourceDeleteHandlerInterface::class)
         );
 
-        $this->assertSame($response, $controller->createAction($request));
+        self::assertSame($response, $controller->createAction($request));
     }
 
     public function testReturnsRedirectToIndexResponse(): void
@@ -396,7 +396,7 @@ final class ProductReviewControllerTest extends MockeryTestCase
             Mockery::mock(ResourceDeleteHandlerInterface::class)
         );
 
-        $this->assertSame($response, $controller->createAction($request));
+        self::assertSame($response, $controller->createAction($request));
     }
 
     public function testReturnsCreatedResponse(): void
@@ -514,7 +514,7 @@ final class ProductReviewControllerTest extends MockeryTestCase
             Mockery::mock(ResourceDeleteHandlerInterface::class)
         );
 
-        $this->assertSame($response, $controller->createAction($request));
+        self::assertSame($response, $controller->createAction($request));
     }
 
     public function testReturnsPostEventResponse(): void
@@ -638,7 +638,7 @@ final class ProductReviewControllerTest extends MockeryTestCase
             Mockery::mock(ResourceDeleteHandlerInterface::class)
         );
 
-        $this->assertSame($response, $controller->createAction($request));
+        self::assertSame($response, $controller->createAction($request));
     }
 
     public function testReturnsRedirectToResourceResponse(): void
@@ -769,7 +769,7 @@ final class ProductReviewControllerTest extends MockeryTestCase
             Mockery::mock(ResourceDeleteHandlerInterface::class)
         );
 
-        $this->assertSame($response, $controller->createAction($request));
+        self::assertSame($response, $controller->createAction($request));
     }
 
     public function testReturnsBadRequestResponse(): void
@@ -850,7 +850,7 @@ final class ProductReviewControllerTest extends MockeryTestCase
             Mockery::mock(ResourceDeleteHandlerInterface::class)
         );
 
-        $this->assertSame($response, $controller->createAction($request));
+        self::assertSame($response, $controller->createAction($request));
     }
 
     public function testReturnsInitializeEventResponse(): void
@@ -938,7 +938,7 @@ final class ProductReviewControllerTest extends MockeryTestCase
             Mockery::mock(ResourceDeleteHandlerInterface::class)
         );
 
-        $this->assertSame($response, $controller->createAction($request));
+        self::assertSame($response, $controller->createAction($request));
     }
 
     /**
@@ -1104,6 +1104,6 @@ final class ProductReviewControllerTest extends MockeryTestCase
             Mockery::mock(ResourceDeleteHandlerInterface::class)
         );
 
-        $this->assertSame($response, $controller->createAction($request));
+        self::assertSame($response, $controller->createAction($request));
     }
 }

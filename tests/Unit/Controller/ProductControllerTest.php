@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Nedac\SyliusOrderNowPlugin\Unit\Controller;
 
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Persistence\ObjectManager;
 use FOS\RestBundle\View\View;
 use Mockery;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
@@ -44,7 +44,9 @@ final class ProductControllerTest extends MockeryTestCase
 {
     public function testCanInstantiate(): void
     {
-        $controller = new ProductController(
+        self::expectNotToPerformAssertions();
+
+        new ProductController(
             Mockery::mock(MetadataInterface::class),
             Mockery::mock(RequestConfigurationFactoryInterface::class),
             Mockery::mock(ViewHandlerInterface::class),
@@ -63,8 +65,6 @@ final class ProductControllerTest extends MockeryTestCase
             Mockery::mock(ResourceUpdateHandlerInterface::class),
             Mockery::mock(ResourceDeleteHandlerInterface::class)
         );
-
-        $this->assertInstanceOf(ResourceController::class, $controller);
     }
 
     public function testAddsFormsToIndexTemplate(): void
@@ -231,7 +231,7 @@ final class ProductControllerTest extends MockeryTestCase
             Mockery::mock(ResourceDeleteHandlerInterface::class)
         );
 
-        $this->assertSame($response, $controller->indexAction(Mockery::mock(Request::class)));
+        self::assertSame($response, $controller->indexAction(Mockery::mock(Request::class)));
     }
 
     public function testAddsFormToShowTemplate(): void
@@ -363,6 +363,6 @@ final class ProductControllerTest extends MockeryTestCase
             Mockery::mock(ResourceDeleteHandlerInterface::class)
         );
 
-        $this->assertSame($response, $controller->showAction(Mockery::mock(Request::class)));
+        self::assertSame($response, $controller->showAction(Mockery::mock(Request::class)));
     }
 }

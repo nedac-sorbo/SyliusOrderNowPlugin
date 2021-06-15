@@ -1,22 +1,7 @@
-includes:
-    - vendor/phpstan/phpstan-doctrine/extension.neon
-    - vendor/phpstan/phpstan-webmozart-assert/extension.neon
-
 parameters:
     reportUnmatchedIgnoredErrors: false
 
-    excludes_analyse:
-        # Makes PHPStan crash
-        - 'src/DependencyInjection/Configuration.php'
-
-        # Test dependencies
-        - 'tests/Application/app/**.php'
-        - 'tests/Application/src/**.php'
-
     ignoreErrors:
-        -
-            message: '/Parameter #1 \$configuration of method Symfony\\Component\\DependencyInjection\\Extension\\Extension::processConfiguration\(\) expects Symfony\\Component\\Config\\Definition\\ConfigurationInterface, Symfony\\Component\\Config\\Definition\\ConfigurationInterface\|null given./'
-            path: 'src/DependencyInjection/NedacSyliusOrderNowExtension.php'
-        -
-            message: '/Call to an undefined method Symfony\\Component\\Form\\FormError|Symfony\\Component\\Form\\FormErrorIterator::getMessage\(\)\./'
-            path: 'src/Controller/OrderItemControllerTrait.php'
+        - '/Method Nedac\\SyliusOrderNowPlugin\\Form\\Type\\AddToCartType::buildForm\(\) has parameter \$builder with no value type specified in iterable type Symfony\\Component\\Form\\FormBuilderInterface./'
+        - '/Method Nedac\\SyliusOrderNowPlugin\\Form\\Type\\AddToCartType::buildForm\(\) has parameter \$options with no value type specified in iterable type array./'
+        - '/Method Nedac\\SyliusOrderNowPlugin\\DependencyInjection\\NedacSyliusOrderNowExtension::load\(\) has parameter \$config with no value type specified in iterable type array./'
