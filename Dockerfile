@@ -121,7 +121,12 @@ RUN set -eux; \
     composer require nedac/sylius-order-now-plugin:"$PLUGIN_VERSION" --no-progress -vvv; \
     composer recipes:install nedac/sylius-order-now-plugin --force -n; \
     composer clear-cache; \
-    cat src/Entity/Channel/Channel.php
+    ls -l config/routes
+
+RUN set -eux; \
+    yq -y -i '.sylius_product.resources.product.classes["controller"] |= . + "Nedac\\SyliusOrderNowPlugin\\Controller\\ProductController"' config/packages/_sylius.yaml; \
+    yq -y -i '.sylius_product.resources.product_association.classes["controller"] |= . + "Nedac\\SyliusOrderNowPlugin\\Controller\\ProductAssociationController"' config/packages/_sylius.yaml; \
+    yq -y -i '.sylius_review.resources.product.review.classes["controller"] |= . + "Nedac\\SyliusOrderNowPlugin\\Controller\\ProductReviewController"' config/packages/_sylius.yaml
 
 VOLUME /srv/sylius/var
 
