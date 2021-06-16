@@ -108,11 +108,12 @@ RUN set -eux; \
 
 ARG PRIVATE_FLEX="false"
 RUN set -eux; \
-    if [ -z "$PRIVATE_FLEX" ] && [ "$PRIVATE_FLEX" != "false" ]; then \
+    if [ ! -z "$PRIVATE_FLEX" ] && [ "$PRIVATE_FLEX" != "false" ]; then \
         cat composer.json | jq --indent 4 '. * {"extra":{"symfony":{"allow-contrib":true,"endpoint":"http://localhost:8080"}}}' > composer.json.tmp; \
         mv composer.json.tmp composer.json; \
         cat composer.json | jq --indent 4 '. * {"config":{"secure-http":false}}' > composer.json.tmp; \
         mv composer.json.tmp composer.json; \
+        cat composer.json; \
     fi
 
 ARG PLUGIN_VERSION=dev-master

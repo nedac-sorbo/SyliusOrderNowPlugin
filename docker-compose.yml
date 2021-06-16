@@ -6,6 +6,8 @@ services:
       context: .
       target: sylius_order_now_plugin_php
       network: host
+      args:
+        - PRIVATE_FLEX=${PRIVATE_FLEX:-false}
     image: ghcr.io/nedac-sorbo/sylius_order_now_plugin_php:latest
     environment:
       - APP_ENV=test
@@ -30,6 +32,8 @@ services:
       context: .
       target: sylius_order_now_plugin_nginx
       network: host
+      args:
+        - PRIVATE_FLEX=${PRIVATE_FLEX:-false}
     image: ghcr.io/nedac-sorbo/sylius_order_now_plugin_nginx:latest
     volumes:
       - public-media:/srv/sylius/public/media:ro,nocopy
@@ -40,6 +44,8 @@ services:
       context: .
       target: sylius_order_now_plugin_nodejs
       network: host
+      args:
+        - PRIVATE_FLEX=${PRIVATE_FLEX:-false}
     image: ghcr.io/nedac-sorbo/sylius_order_now_plugin_nodejs:latest
     volumes:
       - ./src/Resources/public:/srv/sylius/vendor/nedac/sylius-order-now-plugin/src/Resources/public
@@ -50,6 +56,8 @@ services:
       context: .
       target: sylius_order_now_plugin_chrome
       network: host
+      args:
+        - PRIVATE_FLEX=${PRIVATE_FLEX:-false}
     image: ghcr.io/nedac-sorbo/sylius_order_now_plugin_chrome:latest
     volumes:
       - /dev/shm:/dev/shm
