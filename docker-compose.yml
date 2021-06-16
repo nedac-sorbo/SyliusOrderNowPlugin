@@ -15,6 +15,7 @@ services:
     volumes:
       - .:/srv/sylius/vendor/nedac/sylius-order-now-plugin
       - ./etc/build:/srv/sylius/etc/build
+      - public:/srv/sylius/public:rw
       - public-media:/srv/sylius/public/media:rw
     network_mode: host
 
@@ -36,6 +37,7 @@ services:
         - PRIVATE_FLEX=${PRIVATE_FLEX:-false}
     image: ghcr.io/nedac-sorbo/sylius_order_now_plugin_nginx:latest
     volumes:
+      - public:/srv/sylius/public:ro
       - public-media:/srv/sylius/public/media:ro,nocopy
     network_mode: host
 
@@ -64,4 +66,5 @@ services:
     network_mode: host
 
 volumes:
+  public:
   public-media:
