@@ -1,8 +1,7 @@
 function stopPropagationOnClickOfElementsWithClass(className) {
   const elements = document.getElementsByClassName(className);
 
-  for (let i = 0; i < elements.length; i + 1) {
-    const element = elements.item(i);
+  for (const element of elements) {
     element.onclick = (event) => {
       event.stopPropagation();
     };
@@ -12,8 +11,7 @@ function stopPropagationOnClickOfElementsWithClass(className) {
 function submitChildFormOnClickOfProductCardButton() {
   const buttons = document.getElementsByClassName('nedac-order-now-button-container');
 
-  for (let i = 0; i < buttons.length; i + 1) {
-    const button = buttons.item(i);
+  for (const button of buttons) {
     const form = button.firstElementChild;
 
     button.onclick = () => {
