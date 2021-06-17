@@ -5,6 +5,7 @@
     "description": "Sylius plugin that adds the possibility to add products to the shopping cart using a button on the product card.",
     "license": "MIT",
     "require": {
+        "friendsofsymfony/oauth-server-bundle": "^1.6 || >2.0.0-alpha.0 ^2.0@dev",
         "php": "^7.4 || ^8.0",
         "sylius/sylius": ">=1.9.1 <1.10.0",
         "webmozart/assert": "^1.10"
@@ -14,7 +15,6 @@
         "dmore/chrome-mink-driver": "^2.8",
         "friends-of-behat/mink-extension": "^2.5",
         "friends-of-behat/page-object-extension": "^0.3",
-        "friendsofsymfony/oauth-server-bundle": "^1.6 || >2.0.0-alpha.0 ^2.0@dev",
         "phpstan/extension-installer": "^1.1",
         "phpstan/phpstan": "^0.12",
         "phpstan/phpstan-doctrine": "^0.12",
