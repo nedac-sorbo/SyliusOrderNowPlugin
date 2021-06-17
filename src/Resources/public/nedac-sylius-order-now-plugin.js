@@ -2,6 +2,7 @@ function stopPropagationOnClickOfElementsWithClass(className) {
   const elements = document.getElementsByClassName(className);
 
   Array.from(elements).forEach((element) => {
+    // eslint-disable-next-line no-param-reassign
     element.onclick = (event) => {
       event.stopPropagation();
     };
@@ -14,6 +15,7 @@ function submitChildFormOnClickOfProductCardButton() {
   Array.from(buttons).forEach((button) => {
     const form = button.firstElementChild;
 
+    // eslint-disable-next-line no-param-reassign
     button.onclick = () => {
       form.submit();
     };
