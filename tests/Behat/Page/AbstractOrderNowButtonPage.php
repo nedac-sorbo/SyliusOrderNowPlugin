@@ -22,6 +22,8 @@ abstract class AbstractOrderNowButtonPage extends SymfonyPage
 document.querySelector('[data-test-order-now-button-container]').click();
 JS
         );
+
+        sleep(2);
     }
 
     /**
