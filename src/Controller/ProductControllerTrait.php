@@ -11,6 +11,7 @@ use Sylius\Bundle\ResourceBundle\Controller\RequestConfiguration;
 use Sylius\Bundle\ResourceBundle\Controller\RequestConfigurationFactoryInterface;
 use Sylius\Bundle\ResourceBundle\Controller\ResourcesCollectionProviderInterface;
 use Sylius\Bundle\ResourceBundle\Grid\View\ResourceGridView;
+use Sylius\Component\Core\Model\ProductInterface;
 use Sylius\Component\Resource\Metadata\MetadataInterface;
 use Sylius\Component\Resource\Model\ResourceInterface;
 use Sylius\Component\Resource\Repository\RepositoryInterface;
@@ -45,7 +46,7 @@ trait ProductControllerTrait
             $iterable = $resources;
 
             if ($resources instanceof ResourceGridView) {
-                /** @var Pagerfanta $pager */
+                /** @var Pagerfanta<ProductInterface> $pager */
                 $pager = $resources->getData();
 
                 $iterable = $pager->getIterator();

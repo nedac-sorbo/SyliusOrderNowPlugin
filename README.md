@@ -8,7 +8,7 @@ official Sylius documentation on how to setup the product variant selection meth
 
 ##### Supported Sylius versions:
 <table>
-    <tr><td>1.9</td></tr>
+    <tr><td>1.10</td></tr>
 </table>
 
 

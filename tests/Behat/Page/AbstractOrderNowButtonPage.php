@@ -23,7 +23,7 @@ document.querySelector('[data-test-order-now-button-container]').click();
 JS
         );
 
-        sleep(2);
+        sleep(5);
     }
 
     /**
